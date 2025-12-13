@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Iniciar Sesión</title>
+</head>
+<body>
+    <div style="text-align: center; margin-top: 50px;">
+        <h2>Acceso Clínica Renacer</h2>
+        
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Entrar al Sistema</button>
+        </form>
+    </div>
+</body>
+</html>

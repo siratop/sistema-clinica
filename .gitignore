@@ -1,0 +1,13 @@
+# --- Archivos de Base de Datos (¡MUY IMPORTANTE!) ---
+db.sqlite3
+
+# --- Entorno Virtual (No se sube, se recrea en el servidor) ---
+venv/
+env/
+
+# --- Archivos compilados de Python (Basura) ---
+__pycache__/
+*.py[cod]
+
+# --- Carpetas de Media (Las fotos de prueba no se suben) ---
+media/

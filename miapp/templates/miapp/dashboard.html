@@ -1,0 +1,48 @@
+{% extends 'miapp/base.html' %}
+
+{% block content %}
+<div class="text-center mb-5">
+    <h1 class="display-4">Panel de Control</h1>
+    <p class="lead">Bienvenido al sistema de gestión de Clínica Renacer</p>
+</div>
+
+<div class="row text-center">
+    
+    <div class="col-md-4 mb-3">
+        <div class="card text-white bg-primary shadow h-100">
+            <div class="card-header">Pacientes Registrados</div>
+            <div class="card-body">
+                <h1 class="card-title display-1">{{ total_pacientes }}</h1>
+                <p class="card-text">Personas en la base de datos</p>
+            </div>
+            <div class="card-footer bg-white">
+                <a href="{% url 'lista_pacientes' %}" class="text-primary fw-bold text-decoration-none">Ver Listado →</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <div class="card text-white bg-success shadow h-100">
+            <div class="card-header">Citas para HOY</div>
+            <div class="card-body">
+                <h1 class="card-title display-1">{{ citas_hoy }}</h1>
+                <p class="card-text">Pacientes que vendrán hoy</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <div class="card text-white bg-warning shadow h-100">
+            <div class="card-header text-dark">Total Pendientes</div>
+            <div class="card-body text-dark">
+                <h1 class="card-title display-1">{{ total_citas_pendientes }}</h1>
+                <p class="card-text">Citas futuras programadas</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="text-center mt-5">
+    <img src="https://cdn-icons-png.flaticon.com/512/3063/3063176.png" width="150" alt="Médico">
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+entrar en la carpeta  
+cd clinica_renacer_backend
+
+entorno viertual 
+python -m venv venv    y se activa con : venv\Scripts\activate
+
+
+Comando,Función
+python manage.py runserver   ,Enciende tu sitio web localmente.
+python manage.py migrate   ,Actualiza la base de datos con cambios estructurales.
+python manage.py startapp [nombre],Crea una nueva sección (aplicación) en tu proyecto.
+python manage.py makemigrations,Prepara los cambios que hiciste en tus modelos (base de datos).
+
+para apagar ctrol c 
+
+
+Las Migraciones (Otra vez)
+Cada vez que cambias models.py, tienes que avisarle a la base de datos.
+
+Ve a la terminal y ejecuta estos dos comandos, uno por uno:
+
+Bash
+
+python manage.py makemigrations
+
+
+Bash
+
+python manage.py migrate

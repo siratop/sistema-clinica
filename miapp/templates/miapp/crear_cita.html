@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Agendar Cita</title>
+</head>
+<body>
+    <h1>Agendar cita para: {{ paciente.nombre }} {{ paciente.apellido }}</h1>
+    
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Confirmar Cita</button>
+    </form>
+    
+    <br>
+    <a href="{% url 'detalle_paciente' paciente.id %}">Cancelar</a>
+</body>
+</html>

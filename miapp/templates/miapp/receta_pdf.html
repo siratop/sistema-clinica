@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    
+    <title>Receta Médica</title>
+    <style type="text/css">
+        @page {
+            size: letter;
+            margin: 2cm;
+        }
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 12pt;
+            line-height: 1.5;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #000;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+        }
+        .clinica-name {
+            font-size: 20pt;
+            font-weight: bold;
+            color: #2c3e50;
+            text-transform: uppercase;
+        }
+        .info-paciente {
+            width: 100%;
+            margin-bottom: 20px;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            padding: 15px;
+        }
+        .seccion-titulo {
+            font-weight: bold;
+            font-size: 14pt;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #3498db;
+            color: #2980b9;
+        }
+        .contenido {
+            margin-bottom: 20px;
+            font-size: 11pt;
+            text-align: justify;
+        }
+        .footer {
+            position: fixed;
+            bottom: 0px;
+            left: 0px;
+            right: 0px;
+            text-align: center;
+            font-size: 9pt;
+            color: #777;
+            border-top: 1px solid #ccc;
+            padding-top: 10px;
+        }
+        .firma {
+            margin-top: 100px;
+            text-align: right;
+            margin-right: 20px;
+        }
+        .linea-firma {
+            border-top: 1px solid #000;
+            width: 250px;
+            display: inline-block;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="clinica-name">Clínica Renacer</div>
+        <div style="font-size: 10pt; color: #555;">Av. Principal #123, Ciudad Guayana | Tel: 555-0199</div>
+    </div>
+
+    <div class="info-paciente">
+        <table width="100%" border="0">
+            <tr>
+                <td><strong>Paciente:</strong> {{ paciente.nombre }} {{ paciente.apellido }}</td>
+                <td><strong>Fecha:</strong> {{ cita.fecha }}</td>
+            </tr>
+            <tr>
+                <td><strong>DNI:</strong> {{ paciente.dni }}</td>
+                <td><strong>Hora:</strong> {{ cita.hora }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="seccion-titulo">Diagnóstico</div>
+    <div class="contenido">
+        {{ cita.diagnostico|linebreaksbr }}
+    </div>
+
+    <div class="seccion-titulo">Rp/ (Tratamiento)</div>
+    <div class="contenido">
+        {{ cita.tratamiento|linebreaksbr }}
+    </div>
+
+    {% if cita.sintomas %}
+    <div class="seccion-titulo">Observaciones / Síntomas</div>
+    <div class="contenido">
+        {{ cita.sintomas|linebreaksbr }}
+    </div>
+    {% endif %}
+
+    <div class="firma">
+        <div class="linea-firma"></div><br>
+        <strong>Dr/a. {{ doctor.username }}</strong><br>
+        Médico Tratante
+    </div>
+
+    <div class="footer">
+        Este documento es un comprobante médico generado electrónicamente el {{ fecha_impresion }} por el sistema de Clínica Renacer.
+    </div>
+
+</body>
+</html>
