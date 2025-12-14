@@ -90,3 +90,7 @@ def registro_paciente(request):
         form = PacienteForm()
     
     return render(request, 'miapp/registro_paciente.html', {'form': form})
+
+def cita_invitado(request):
+    # Aquí luego pondremos el formulario simple. Por ahora, mostramos una página "En construcción" o simple.
+    return render(request, 'miapp/cita_invitado.html')

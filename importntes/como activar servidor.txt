@@ -11,6 +11,23 @@ python manage.py migrate   ,Actualiza la base de datos con cambios estructurales
 python manage.py startapp [nombre],Crea una nueva sección (aplicación) en tu proyecto.
 python manage.py makemigrations,Prepara los cambios que hiciste en tus modelos (base de datos).
 
+actualizar
+VS Code:
+
+PowerShell
+
+git add .
+git commit -m "Mejoras diseño portada y registro"
+git push
+PythonAnywhere (Consola Bash):
+
+Bash
+
+cd sistema-clinica
+git pull
+
+
+
 para apagar ctrol c 
 
 

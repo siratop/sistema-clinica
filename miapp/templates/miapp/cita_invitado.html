@@ -1,0 +1,16 @@
+{% extends 'miapp/base.html' %}
+{% block content %}
+<div class="container text-center mt-5">
+    <i class="fa-solid fa-calendar-clock fa-5x text-secondary mb-4"></i>
+    <h2 class="fw-bold">Agendar Cita como Invitado</h2>
+    <p class="lead text-muted">
+        Estás agendando una cita sin registrarte.<br>
+        Recuerda que no podrás consultar esta cita online posteriormente.
+    </p>
+    <div class="alert alert-warning d-inline-block">
+        <i class="fa-solid fa-hammer"></i> Módulo en construcción.
+    </div>
+    <br>
+    <a href="{% url 'inicio' %}" class="btn btn-outline-secondary mt-3">Volver</a>
+</div>
+{% endblock %}

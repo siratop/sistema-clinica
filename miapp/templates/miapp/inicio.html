@@ -18,89 +18,76 @@
             </div>
         </div>
     </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon"></span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
-        <span class="carousel-control-next-icon"></span>
-    </button>
 </div>
 
 <div class="row text-center g-4 justify-content-center">
-    <div class="col-md-5">
-        <div class="card p-4 shadow h-100 border-0">
+    
+    <div class="col-md-4">
+        <div class="card p-4 shadow-sm h-100 border-0 hover-effect">
             <div class="mb-3 text-success"><i class="fa-solid fa-hospital-user fa-3x"></i></div>
-            <h3 class="fw-bold">Soy Paciente</h3>
-            <p class="text-muted">Agenda citas, revisa tu historial y descarga resultados.</p>
-            <a href="{% url 'registro_paciente' %}" class="btn btn-outline-success rounded-pill px-4">Registrarme</a>
-<a href="{% url 'login' %}" class="btn btn-sm btn-link text-success">Ya tengo cuenta</a>
+            <h4 class="fw-bold">Soy Paciente</h4>
+            <p class="text-muted small">Crea tu cuenta para tener historial clínico, ver resultados online y descargar recetas.</p>
+            <div class="d-grid gap-2">
+                <a href="{% url 'registro_paciente' %}" class="btn btn-outline-success rounded-pill">Registrarme</a>
+                <a href="{% url 'login' %}" class="btn btn-sm text-success">Ya tengo cuenta</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card p-4 shadow-sm h-100 border-0 hover-effect bg-light">
+            <div class="mb-3 text-secondary"><i class="fa-solid fa-calendar-check fa-3x"></i></div>
+            <h4 class="fw-bold text-secondary">Cita Rápida</h4>
+            <p class="text-muted small">
+                Agenda sin registrarte.
+                <br>
+                <span class="text-danger"><i class="fa-solid fa-triangle-exclamation"></i> Desventaja:</span> No podrás ver resultados ni recetas en línea.
+            </p>
+            <div class="d-grid mt-auto">
+                <a href="{% url 'cita_invitado' %}" class="btn btn-secondary rounded-pill">Agendar como Invitado</a>
+            </div>
         </div>
     </div>
     
-    <div class="col-md-5">
-        <div class="card p-4 shadow h-100 border-0 bg-success text-white">
+    <div class="col-md-4">
+        <div class="card p-4 shadow-sm h-100 border-0 bg-success text-white">
             <div class="mb-3 text-white"><i class="fa-solid fa-user-doctor fa-3x"></i></div>
-            <h3 class="fw-bold">Soy Personal</h3>
-            <p class="opacity-75">Acceso administrativo para médicos y enfermeras.</p>
-            <a href="{% url 'login' %}" class="btn btn-light text-success fw-bold rounded-pill px-4">Acceso Sistema</a>
+            <h4 class="fw-bold">Soy Personal</h4>
+            <p class="opacity-75 small">Acceso administrativo exclusivo para médicos, enfermeras y secretarias.</p>
+            <div class="d-grid mt-auto">
+                <a href="{% url 'login' %}" class="btn btn-light text-success fw-bold rounded-pill">Acceso Sistema</a>
+            </div>
         </div>
     </div>
 </div>
 
-<div class="container mb-5">
-    <div class="alert alert-warning shadow-sm border-start border-warning border-5" role="alert">
-        <h4 class="alert-heading"><i class="fa-solid fa-bullhorn"></i> Información Importante</h4>
-        <p>
+<div class="container mt-5 pt-4"> <div class="alert alert-light shadow-sm border border-warning" role="alert">
+        <h5 class="alert-heading text-warning-emphasis"><i class="fa-solid fa-bullhorn"></i> Información Importante</h5>
+        <p class="text-muted mb-0">
             Estimados pacientes, recordamos que por motivos de mantenimiento, el área de <strong>Rayos X</strong> 
             estará cerrada este fin de semana. Las consultas generales operan con normalidad.
         </p>
-        <hr>
-        <p class="mb-0 small">Administración Clínica Renacer - 14 Dic 2025</p>
+        <hr class="text-muted">
+        <small class="text-muted">Administración Clínica Renacer - 14 Dic 2025</small>
     </div>
 </div>
 
-<div class="row justify-content-center mb-5">
+<div class="row justify-content-center my-5">
     <div class="col-md-8">
-        <h2 class="text-center text-success fw-bold mb-4">Preguntas Frecuentes</h2>
-        
+        <h3 class="text-center text-secondary fw-bold mb-4">Preguntas Frecuentes</h3>
         <div class="accordion shadow-sm" id="faqAccordion">
             <div class="accordion-item">
                 <h2 class="accordion-header">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
                         ¿Necesito cita previa para emergencias?
                     </button>
                 </h2>
-                <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        <strong>No.</strong> Nuestra unidad de emergencia trabaja las 24 horas del día por orden de llegada y gravedad (triaje).
-                    </div>
-                </div>
-            </div>
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
-                        ¿Cómo puedo ver mis resultados de laboratorio?
-                    </button>
-                </h2>
-                <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        Debes registrarte en la opción <strong>"Soy Paciente"</strong>. Una vez dentro de tu portal, podrás descargar los resultados en PDF.
-                    </div>
-                </div>
-            </div>
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
-                        ¿Aceptan seguros internacionales?
-                    </button>
-                </h2>
-                <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        Sí, trabajamos con la mayoría de los seguros internacionales. Por favor, pase por admisión para verificar su póliza.
-                    </div>
+                <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">No, Emergencias atiende 24/7 por orden de llegada.</div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 {% endblock %}
