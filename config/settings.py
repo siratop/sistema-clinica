@@ -117,6 +117,9 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# --- AGREGA ESTA LÍNEA EXACTA: ---
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 # Cuando te logueas, te manda a la página de inicio (que llamamos 'home' en urls.py)
 LOGIN_REDIRECT_URL = 'home'
 # Cuando te deslogueas, te manda a la pantalla de login de nuevo
