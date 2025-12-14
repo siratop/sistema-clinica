@@ -1,8 +1,10 @@
-
 from django.contrib import admin
-from .models import Paciente  # Importamos tu modelo
-from .models import Paciente, Cita
+from .models import PerfilUsuario, Paciente, Cita, Especialidad, CarruselImagen, PreguntaFrecuente
 
-# Registramos el modelo para verlo en el admin
+# Esto permite ver los datos en el panel /admin
+admin.site.register(PerfilUsuario)
 admin.site.register(Paciente)
 admin.site.register(Cita)
+admin.site.register(Especialidad)
+admin.site.register(CarruselImagen)
+admin.site.register(PreguntaFrecuente)

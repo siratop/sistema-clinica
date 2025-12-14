@@ -99,3 +99,35 @@ class Documento(models.Model):
     archivo = models.FileField(upload_to='documentos/')
     descripcion = models.CharField(max_length=200)
     fecha_subida = models.DateField(auto_now_add=True)
+
+    # --- GESTIÓN DE CONTENIDO (Solo Admin) ---
+
+class CarruselImagen(models.Model):
+    titulo = models.CharField(max_length=100)
+    subtitulo = models.CharField(max_length=200, blank=True)
+    # Usaremos una URL externa por ahora para no complicarnos con subida de archivos media
+    # O si prefieres subir archivos, usa ImageField (requiere configurar media)
+    imagen_url = models.URLField(verbose_name="URL de la Imagen", help_text="Pega aquí el link de la imagen")
+    orden = models.IntegerField(default=0, help_text="Orden de aparición (1, 2, 3...)")
+    activo = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.titulo
+    
+    class Meta:
+        verbose_name = "Imagen del Carrusel"
+        verbose_name_plural = "Imágenes del Carrusel"
+        ordering = ['orden']
+
+class PreguntaFrecuente(models.Model):
+    pregunta = models.CharField(max_length=255)
+    respuesta = models.TextField()
+    orden = models.IntegerField(default=0)
+    activa = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.pregunta
+    
+    class Meta:
+        verbose_name = "Pregunta Frecuente"
+        ordering = ['orden']

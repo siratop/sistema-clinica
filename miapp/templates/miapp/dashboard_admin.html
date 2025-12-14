@@ -1,0 +1,59 @@
+{% extends 'miapp/base.html' %}
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+        <h2 class="text-success fw-bold"><i class="fa-solid fa-user-shield"></i> Administración General</h2>
+        <span class="badge bg-dark">Acceso Total</span>
+    </div>
+</div>
+
+<div class="row g-4 mb-5">
+    <div class="col-md-4">
+        <div class="card bg-success text-white h-100 shadow hover-effect">
+            <div class="card-body text-center">
+                <i class="fa-solid fa-chart-line fa-3x mb-3"></i>
+                <h3>Finanzas</h3>
+                <p>Ingresos, Egresos y Reportes Contables.</p>
+                <button class="btn btn-light text-success fw-bold w-100">Ver Balance</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card bg-white h-100 shadow border-success hover-effect">
+            <div class="card-body text-center text-success">
+                <i class="fa-solid fa-user-doctor fa-3x mb-3"></i>
+                <h3>Staff Médico</h3>
+                <p>{{ medicos.count }} Doctores Activos</p>
+                <button class="btn btn-outline-success w-100">Gestionar Doctores</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card bg-white h-100 shadow border-primary hover-effect">
+            <div class="card-body text-center text-primary">
+                <i class="fa-solid fa-users fa-3x mb-3"></i>
+                <h3>Pacientes</h3>
+                <p>{{ total_pacientes }} Registrados</p>
+                <a href="{% url 'lista_pacientes' %}" class="btn btn-outline-primary w-100">Ver Listado</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm border-warning mb-5">
+    <div class="card-header bg-warning-subtle fw-bold">
+        <i class="fa-solid fa-pen-nib"></i> Gestión de Contenidos (Página Web)
+    </div>
+    <div class="card-body">
+        <p class="text-muted">Desde aquí puedes editar lo que ven los usuarios en la portada.</p>
+        <a href="/admin/miapp/carruselimagen/" target="_blank" class="btn btn-warning me-2">
+            <i class="fa-regular fa-images"></i> Editar Carrusel
+        </a>
+        <a href="/admin/miapp/preguntafrecuente/" target="_blank" class="btn btn-warning">
+            <i class="fa-solid fa-circle-question"></i> Editar Preguntas Frecuentes
+        </a>
+    </div>
+</div>
+{% endblock %}
