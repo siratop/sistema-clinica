@@ -1,54 +1,35 @@
 {% extends 'miapp/base.html' %}
 
 {% block content %}
-<div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+<div class="row justify-content-center align-items-center" style="min-height: 60vh;">
     <div class="col-md-5 col-lg-4">
-        
         <div class="card shadow-lg border-0 rounded-4">
             <div class="card-header bg-success text-white text-center py-4 rounded-top-4">
-                <h3 class="mb-0 fw-bold"><i class="fa-solid fa-user-doctor me-2"></i>Acceso Seguro</h3>
-                <small>Sistema Clínica Renacer</small>
+                <h3 class="mb-0 fw-bold"><i class="fa-solid fa-lock me-2"></i>Acceso Seguro</h3>
             </div>
-            
             <div class="card-body p-4">
                 {% if form.errors %}
-                    <div class="alert alert-danger py-2 text-center small">
-                        <i class="fa-solid fa-triangle-exclamation"></i> Usuario o contraseña incorrectos.
-                    </div>
+                    <div class="alert alert-danger py-2 text-center small">Datos incorrectos. Intente de nuevo.</div>
                 {% endif %}
-
                 <form method="post">
                     {% csrf_token %}
-                    
                     <div class="mb-3">
-                        <label class="form-label text-muted fw-bold">Usuario</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-user text-success"></i></span>
-                            <input type="text" name="username" class="form-control border-start-0" placeholder="Ej: Dr. Perez" required autofocus>
-                        </div>
+                        <label class="fw-bold text-muted">Usuario</label>
+                        <input type="text" name="username" class="form-control" required autofocus>
                     </div>
-
                     <div class="mb-3">
-                        <label class="form-label text-muted fw-bold">Contraseña</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-lock text-success"></i></span>
-                            <input type="password" name="password" class="form-control border-start-0" placeholder="••••••••" required>
-                        </div>
+                        <label class="fw-bold text-muted">Contraseña</label>
+                        <input type="password" name="password" class="form-control" required>
                     </div>
-
                     <div class="d-grid mt-4">
-                        <button type="submit" class="btn btn-success btn-lg fw-bold shadow-sm">
-                            Entrar al Sistema
-                        </button>
+                        <button type="submit" class="btn btn-success fw-bold">Entrar</button>
                     </div>
                 </form>
             </div>
-            
             <div class="card-footer text-center bg-light py-3 rounded-bottom-4">
-                <small class="text-muted">¿Eres nuevo? <a href="{% url 'inicio' %}" class="text-success fw-bold text-decoration-none">Volver al Inicio</a></small>
+                <a href="{% url 'inicio' %}" class="text-success text-decoration-none fw-bold">Volver al Inicio</a>
             </div>
         </div>
-
     </div>
 </div>
 {% endblock %}

@@ -1,11 +1,10 @@
 from django import forms
-# CORRECCIÓN: Quitamos 'ConsultaForm' de esta línea porque no es un modelo
 from .models import Paciente, Cita, Documento
+
 class PacienteForm(forms.ModelForm):
     class Meta:
         model = Paciente
         fields = '__all__'
-        # Widgets para que se vea bonito con Bootstrap
         widgets = {
             'fecha_nacimiento': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
@@ -32,6 +31,7 @@ class CitaForm(forms.ModelForm):
             'medico': forms.Select(attrs={'class': 'form-select'}),
         }
 
+# Este formulario NO se importa de models, se define AQUÍ
 class ConsultaForm(forms.ModelForm):
     class Meta:
         model = Cita
