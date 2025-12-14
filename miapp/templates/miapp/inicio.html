@@ -1,8 +1,14 @@
+{% extends 'miapp/base.html' %}
+
+{% block content %}
+
 <div id="mainCarousel" class="carousel slide mb-5 shadow rounded overflow-hidden" data-bs-ride="carousel">
     
     <div class="carousel-indicators">
         {% for slide in slides %}
         <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}"></button>
+        {% empty %}
+        <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="0" class="active"></button>
         {% endfor %}
     </div>
 
@@ -19,8 +25,11 @@
         </div>
         {% empty %}
         <div class="carousel-item active">
-            <img src="https://img.freepik.com/free-photo/blur-hospital_1203-7957.jpg" class="d-block w-100" style="height: 400px; object-fit: cover;">
-            <div class="carousel-caption"><h1>Clínica Renacer</h1></div>
+            <img src="https://img.freepik.com/free-photo/blur-hospital_1203-7957.jpg" class="d-block w-100" style="height: 400px; object-fit: cover; filter: brightness(0.6);">
+            <div class="carousel-caption">
+                <h1 class="display-4 fw-bold">Clínica Renacer</h1>
+                <p class="fs-4">Excelencia médica y tecnología en Ciudad Guayana.</p>
+            </div>
         </div>
         {% endfor %}
     </div>
@@ -33,13 +42,78 @@
     </button>
 </div>
 
+<div class="row text-center g-4 justify-content-center">
+    
+    <div class="col-md-4">
+        <div class="card p-4 shadow-sm h-100 border-0 hover-effect">
+            <div class="mb-3 text-success"><i class="fa-solid fa-hospital-user fa-3x"></i></div>
+            <h4 class="fw-bold">Soy Paciente</h4>
+            <p class="text-muted small">Historial clínico, resultados online y recetas.</p>
+            <div class="d-grid gap-2">
+                <a href="{% url 'registro_paciente' %}" class="btn btn-outline-success rounded-pill">Registrarme</a>
+                <a href="{% url 'login' %}" class="btn btn-sm text-success">Ya tengo cuenta</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card p-4 shadow-sm h-100 border-0 hover-effect bg-light">
+            <div class="mb-3 text-secondary"><i class="fa-solid fa-calendar-check fa-3x"></i></div>
+            <h4 class="fw-bold text-secondary">Cita Rápida</h4>
+            <p class="text-muted small">
+                Agenda sin registrarte.<br>
+                <span class="text-danger"><i class="fa-solid fa-triangle-exclamation"></i> Nota:</span> No guarda historial.
+            </p>
+            <div class="d-grid mt-auto">
+                <a href="{% url 'cita_invitado' %}" class="btn btn-secondary rounded-pill">Agendar como Invitado</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card p-4 shadow-sm h-100 border-0 bg-success text-white">
+            <div class="mb-3 text-white"><i class="fa-solid fa-user-doctor fa-3x"></i></div>
+            <h4 class="fw-bold">Soy Personal</h4>
+            <p class="opacity-75 small">Acceso exclusivo médicos y administrativos.</p>
+            <div class="d-grid mt-auto">
+                <a href="{% url 'login' %}" class="btn btn-light text-success fw-bold rounded-pill">Acceso Sistema</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% if aviso and aviso.activo %}
-<div class="container mt-5">
+<div class="container mt-5 pt-4">
     <div class="alert alert-warning shadow-sm border-start border-warning border-5" role="alert">
         <h4 class="alert-heading text-warning-emphasis"><i class="fa-solid fa-bullhorn"></i> {{ aviso.titulo }}</h4>
-        <p>{{ aviso.mensaje }}</p>
+        <p class="mb-0">{{ aviso.mensaje }}</p>
         <hr>
         <small class="text-muted">Actualizado: {{ aviso.fecha_actualizacion|date:"d M Y" }}</small>
     </div>
 </div>
 {% endif %}
+
+<div class="row justify-content-center my-5">
+    <div class="col-md-8">
+        <h3 class="text-center text-secondary fw-bold mb-4">Preguntas Frecuentes</h3>
+        
+        <div class="accordion shadow-sm" id="faqAccordion">
+            {% for faq in faqs %}
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq{{ faq.id }}">
+                        {{ faq.pregunta }}
+                    </button>
+                </h2>
+                <div id="faq{{ faq.id }}" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">{{ faq.respuesta }}</div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-center text-muted">No hay preguntas registradas aún.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
