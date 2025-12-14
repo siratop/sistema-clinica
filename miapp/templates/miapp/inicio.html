@@ -1,0 +1,112 @@
+{% extends 'miapp/base.html' %}
+
+{% block content %}
+
+<div id="heroCarousel" class="carousel slide mb-5 shadow rounded-3 overflow-hidden" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+    </div>
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <img src="https://img.freepik.com/free-photo/blur-hospital_1203-7957.jpg" class="d-block w-100" style="height: 450px; object-fit: cover; filter: brightness(0.6);" alt="Hospital">
+            <div class="carousel-caption d-none d-md-block text-start">
+                <h1 class="display-3 fw-bold text-white">Clínica Renacer</h1>
+                <p class="fs-4">Tecnología de punta y calidez humana en el corazón de Ciudad Guayana.</p>
+                <a href="#servicios" class="btn btn-success btn-lg mt-2 shadow">Conoce nuestros servicios</a>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img src="https://img.freepik.com/free-photo/team-young-specialist-doctors-standing-corridor-hospital_1303-21199.jpg" class="d-block w-100" style="height: 450px; object-fit: cover; filter: brightness(0.6);" alt="Doctores">
+            <div class="carousel-caption d-none d-md-block text-start">
+                <h1 class="display-4 fw-bold">Especialistas Certificados</h1>
+                <p class="fs-4">Tu salud en manos de los mejores expertos de Venezuela.</p>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img src="https://img.freepik.com/free-photo/doctor-working-with-microscope_1157-30234.jpg" class="d-block w-100" style="height: 450px; object-fit: cover; filter: brightness(0.6);" alt="Laboratorio">
+            <div class="carousel-caption d-none d-md-block text-start">
+                <h1 class="display-4 fw-bold">Resultados en Línea</h1>
+                <p class="fs-4">Consulta tus exámenes y recetas sin salir de casa.</p>
+            </div>
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+    </button>
+</div>
+
+<div class="row text-center mb-5 justify-content-center g-4">
+    <div class="col-12 mb-2">
+        <h2 class="text-secondary fw-bold">¿Cómo deseas ingresar?</h2>
+        <hr class="w-25 mx-auto text-success border-3 opacity-100">
+    </div>
+
+    <div class="col-md-5 col-lg-4">
+        <div class="card h-100 shadow border-0 hover-effect">
+            <div class="card-body p-5">
+                <div class="icon-box mb-4 text-success">
+                    <i class="fa-solid fa-hospital-user fa-4x"></i>
+                </div>
+                <h3 class="card-title fw-bold">Soy Paciente</h3>
+                <p class="card-text text-muted mb-4">
+                    Solicita citas médicas, revisa tu historial y descarga tus recetas.
+                </p>
+                <a href="{% url 'login' %}" class="btn btn-outline-success btn-lg w-100 rounded-pill">
+                    Acceso Pacientes
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-5 col-lg-4">
+        <div class="card h-100 shadow border-0 hover-effect bg-success text-white">
+            <div class="card-body p-5">
+                <div class="icon-box mb-4 text-white">
+                    <i class="fa-solid fa-user-doctor fa-4x"></i>
+                </div>
+                <h3 class="card-title fw-bold">Soy Personal</h3>
+                <p class="card-text mb-4 opacity-75">
+                    Acceso exclusivo para médicos, enfermeras y administración.
+                </p>
+                <a href="{% url 'login' %}" class="btn btn-light text-success btn-lg w-100 rounded-pill fw-bold">
+                    Acceso Administrativo
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row align-items-center mb-5 bg-white p-5 rounded-4 shadow-sm" id="servicios">
+    <div class="col-md-6">
+        <h2 class="text-success fw-bold mb-3">Comprometidos con tu Bienestar</h2>
+        <p class="lead text-muted">
+            En Clínica Renacer combinamos la excelencia médica con un trato humano. Nuestras instalaciones están diseñadas para ofrecerte la mayor comodidad y seguridad.
+        </p>
+        <div class="d-flex align-items-center mb-3">
+            <i class="fa-solid fa-location-dot fa-2x text-success me-3"></i>
+            <div>
+                <h5 class="mb-0 fw-bold">Ubicación Estratégica</h5>
+                <small class="text-muted">Av. Principal de Unare, Ciudad Guayana</small>
+            </div>
+        </div>
+        <div class="d-flex align-items-center">
+            <i class="fa-solid fa-phone-volume fa-2x text-success me-3"></i>
+            <div>
+                <h5 class="mb-0 fw-bold">Atención 24 Horas</h5>
+                <small class="text-muted">Emergencias: (0286) 955-5555</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="ratio ratio-16x9 rounded-3 overflow-hidden shadow">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3947.5!2d-62.7!3d8.3!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zOMKwMTgnMDAuMCJOIDYywrA0MicwMCwwIlc!5e0!3m2!1ses!2sve!4v1600000000000!5m2!1ses!2sve" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

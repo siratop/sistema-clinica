@@ -187,3 +187,6 @@ def imprimir_receta(request, id_cita):
         return response
         
     return HttpResponse("Error al generar el PDF")
+
+def inicio(request):
+    return render(request, 'miapp/inicio.html')

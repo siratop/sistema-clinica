@@ -27,3 +27,6 @@ python manage.py makemigrations
 Bash
 
 python manage.py migrate
+
+
+clave servidor: simba321*

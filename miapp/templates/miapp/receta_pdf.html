@@ -1,120 +1,149 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    
-    <title>Receta Médica</title>
-    <style type="text/css">
+    <meta charset="utf-8">
+    <title>Receta Médica - Clínica Renacer</title>
+    <style>
         @page {
             size: letter;
             margin: 2cm;
+            @frame footer_frame {           /* Static Frame */
+                -pdf-frame-content: footerContent;
+                bottom: 1cm;
+                margin-left: 2cm;
+                margin-right: 2cm;
+                height: 1cm;
+            }
         }
+        
         body {
             font-family: Helvetica, Arial, sans-serif;
-            font-size: 12pt;
+            font-size: 12px;
+            color: #333;
             line-height: 1.5;
         }
-        .header {
-            text-align: center;
-            border-bottom: 2px solid #000;
-            margin-bottom: 30px;
+
+        /* --- NUEVO ESTILO VERDE (Clínico) --- */
+        .header-box {
+            border-bottom: 2px solid #198754; /* Verde Bootstrap */
             padding-bottom: 10px;
+            margin-bottom: 20px;
+            color: #198754;
         }
-        .clinica-name {
-            font-size: 20pt;
+
+        .title {
+            font-size: 24px;
             font-weight: bold;
-            color: #2c3e50;
             text-transform: uppercase;
         }
-        .info-paciente {
-            width: 100%;
-            margin-bottom: 20px;
+
+        .subtitle {
+            font-size: 10px;
+            color: #666;
+        }
+
+        /* --- CAJA DE DATOS DEL PACIENTE --- */
+        .patient-box {
             background-color: #f8f9fa;
             border: 1px solid #ddd;
-            padding: 15px;
-        }
-        .seccion-titulo {
-            font-weight: bold;
-            font-size: 14pt;
-            margin-top: 20px;
-            margin-bottom: 10px;
-            border-bottom: 1px solid #3498db;
-            color: #2980b9;
-        }
-        .contenido {
+            padding: 10px;
             margin-bottom: 20px;
-            font-size: 11pt;
-            text-align: justify;
+            border-radius: 5px;
         }
-        .footer {
-            position: fixed;
-            bottom: 0px;
-            left: 0px;
-            right: 0px;
-            text-align: center;
-            font-size: 9pt;
-            color: #777;
-            border-top: 1px solid #ccc;
-            padding-top: 10px;
+
+        .patient-row {
+            padding: 5px 0;
         }
-        .firma {
-            margin-top: 100px;
-            text-align: right;
-            margin-right: 20px;
-        }
-        .linea-firma {
-            border-top: 1px solid #000;
-            width: 250px;
+
+        .label {
+            font-weight: bold;
+            color: #198754; /* Verde */
+            width: 120px;
             display: inline-block;
-            margin-bottom: 5px;
+        }
+
+        /* --- SECCIONES MÉDICAS --- */
+        .section-title {
+            background-color: #198754;
+            color: white;
+            padding: 5px 10px;
+            font-weight: bold;
+            margin-top: 15px;
+            border-radius: 3px;
+        }
+
+        .content-text {
+            margin-top: 5px;
+            margin-bottom: 15px;
+            text-align: justify;
+            white-space: pre-line; /* Respeta los saltos de línea del doctor */
+        }
+
+        /* --- PIE DE PÁGINA --- */
+        .footer-line {
+            border-top: 1px solid #198754;
+            margin-top: 50px;
+            padding-top: 10px;
+            text-align: center;
+            font-size: 10px;
+            color: #666;
         }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <div class="clinica-name">Clínica Renacer</div>
-        <div style="font-size: 10pt; color: #555;">Av. Principal #123, Ciudad Guayana | Tel: 555-0199</div>
+    <div class="header-box">
+        <div class="title">CLÍNICA RENACER</div>
+        <div class="subtitle">
+            Rif: J-12345678-9 | Av. Principal de Unare, Ciudad Guayana<br>
+            Telf: (0286) 955-5555 | emergencia@clinicarenacer.com
+        </div>
     </div>
 
-    <div class="info-paciente">
-        <table width="100%" border="0">
-            <tr>
-                <td><strong>Paciente:</strong> {{ paciente.nombre }} {{ paciente.apellido }}</td>
-                <td><strong>Fecha:</strong> {{ cita.fecha }}</td>
-            </tr>
-            <tr>
-                <td><strong>DNI:</strong> {{ paciente.dni }}</td>
-                <td><strong>Hora:</strong> {{ cita.hora }}</td>
-            </tr>
-        </table>
+    <div class="patient-box">
+        <div class="patient-row">
+            <span class="label">Paciente:</span> {{ paciente.nombre }} {{ paciente.apellido }}
+        </div>
+        <div class="patient-row">
+            <span class="label">C.I.:</span> {{ paciente.cedula }} 
+            &nbsp;|&nbsp; 
+            <span class="label">Edad:</span> {{ paciente.edad }} años
+            &nbsp;|&nbsp;
+            <span class="label">Nº Historia:</span> {{ paciente.numero_historia }}
+        </div>
+        <div class="patient-row">
+            <span class="label">Fecha Consulta:</span> {{ cita.fecha|date:"d/m/Y" }}
+        </div>
     </div>
 
-    <div class="seccion-titulo">Diagnóstico</div>
-    <div class="contenido">
-        {{ cita.diagnostico|linebreaksbr }}
-    </div>
-
-    <div class="seccion-titulo">Rp/ (Tratamiento)</div>
-    <div class="contenido">
-        {{ cita.tratamiento|linebreaksbr }}
+    <div class="section-title">DIAGNÓSTICO</div>
+    <div class="content-text">
+        {{ cita.diagnostico|default:"Sin diagnóstico registrado." }}
     </div>
 
     {% if cita.sintomas %}
-    <div class="seccion-titulo">Observaciones / Síntomas</div>
-    <div class="contenido">
-        {{ cita.sintomas|linebreaksbr }}
+    <div class="section-title">OBSERVACIONES / SIGNOS VITALES</div>
+    <div class="content-text">
+        {{ cita.sintomas }}
     </div>
     {% endif %}
 
-    <div class="firma">
-        <div class="linea-firma"></div><br>
-        <strong>Dr/a. {{ doctor.username }}</strong><br>
-        Médico Tratante
+    <div class="section-title">INDICACIONES Y TRATAMIENTO (Rx)</div>
+    <div class="content-text" style="font-size: 14px;">
+        {{ cita.tratamiento|default:"No se indicaron medicamentos." }}
     </div>
 
-    <div class="footer">
-        Este documento es un comprobante médico generado electrónicamente el {{ fecha_impresion }} por el sistema de Clínica Renacer.
+    <br><br><br>
+
+    <div style="text-align: center; margin-top: 60px;">
+        __________________________________<br>
+        Dr(a). {{ cita.medico.get_full_name|default:cita.medico.username }}<br>
+        <span style="font-size: 10px;">Médico Tratante</span>
+    </div>
+
+    <div id="footerContent" class="footer-line">
+        Clínica Renacer - Sistema de Gestión Hospitalaria<br>
+        Documento generado electrónicamente el {% now "d/m/Y H:i" %}
     </div>
 
 </body>

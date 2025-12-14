@@ -14,4 +14,6 @@ urlpatterns = [
     path('cita/atender/<int:id_cita>/', views.atender_cita, name='atender_cita'),
     path('paciente/subir_archivo/<int:id_paciente>/', views.subir_documento, name='subir_documento'),
     path('cita/imprimir/<int:id_cita>/', views.imprimir_receta, name='imprimir_receta'),
+    # Busca la línea que dice path('', ... ) y cámbiala por:
+path('', views.inicio, name='inicio'),
 ]
