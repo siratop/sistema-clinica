@@ -1,18 +1,16 @@
 from django import forms
-from .models import Paciente, Cita, ConsultaForm, Documento, CarruselImagen, PreguntaFrecuente, AvisoImportante
+# CORRECCIÓN: Quitamos ConsultaForm de esta lista de importación
+from .models import Paciente, Cita, Documento, CarruselImagen, PreguntaFrecuente, AvisoImportante
 
-# En miapp/forms.py
-
+# --- FORMULARIO PACIENTE ---
 class PacienteForm(forms.ModelForm):
-    # Campos EXTRA para crear el usuario (no se guardan en Paciente, sino en User)
+    # Campos EXTRA para crear el usuario
     username = forms.CharField(label="Nombre de Usuario", widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: mariaperez2025'}))
     password = forms.CharField(label="Contraseña", widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Crea una contraseña segura'}))
 
     class Meta:
         model = Paciente
-        # Excluimos 'usuario' porque se crea automático, y 'numero_historia' ya no existe.
         exclude = ['usuario', 'fecha_registro']
-        
         widgets = {
             'fecha_nacimiento': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
@@ -22,53 +20,56 @@ class PacienteForm(forms.ModelForm):
             'telefono': forms.TextInput(attrs={'class': 'form-control'}),
             'correo': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Ayuda a recuperar tu clave (Opcional)'}),
             'direccion': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
-            # Placeholders inteligentes
             'alergias': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Escribe "Ninguna conocida" si no tienes.'}),
             'enfermedades_cronicas': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Ej: Asma, Hipertensión... o "Ninguna conocida".'}),
         }
+
+# --- FORMULARIO PARA CREAR CITAS (Paciente/Secretaria) ---
 class CitaForm(forms.ModelForm):
     class Meta:
         model = Cita
         fields = ['medico', 'fecha', 'hora', 'motivo']
         widgets = {
+            'medico': forms.Select(attrs={'class': 'form-select'}),
             'fecha': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'hora': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
-            'motivo': forms.Textarea(attrs={'rows': 3, 'class': 'form-control'}),
-            'medico': forms.Select(attrs={'class': 'form-select'}),
+            'motivo': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
         }
 
-# Este formulario NO se importa de models, se define AQUÍ
+# --- FORMULARIO PARA LA CONSULTA MÉDICA (Diagnóstico) ---
 class ConsultaForm(forms.ModelForm):
     class Meta:
         model = Cita
-        fields = ['diagnostico', 'tratamiento', 'sintomas']
+        fields = ['diagnostico', 'tratamiento', 'realizada']
         widgets = {
-            'diagnostico': forms.Textarea(attrs={'rows': 3, 'class': 'form-control'}),
-            'tratamiento': forms.Textarea(attrs={'rows': 3, 'class': 'form-control'}),
-            'sintomas': forms.Textarea(attrs={'rows': 3, 'class': 'form-control', 'placeholder': 'Peso, Tensión, Temperatura...'}),
+            'diagnostico': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'tratamiento': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'realizada': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
 
+# --- FORMULARIO DOCUMENTOS ---
 class DocumentoForm(forms.ModelForm):
     class Meta:
         model = Documento
-        fields = ['archivo', 'descripcion']
+        fields = ['descripcion', 'archivo']
         widgets = {
-            'archivo': forms.FileInput(attrs={'class': 'form-control'}),
             'descripcion': forms.TextInput(attrs={'class': 'form-control'}),
+            'archivo': forms.FileInput(attrs={'class': 'form-control'}),
         }
 
-        # --- FORMULARIOS PARA EL ADMINISTRADOR (CMS) ---
-from .models import CarruselImagen, PreguntaFrecuente
+# ==========================================
+# FORMULARIOS CMS (ADMINISTRADOR)
+# ==========================================
 
 class CarruselForm(forms.ModelForm):
     class Meta:
         model = CarruselImagen
-        fields = ['orden', 'titulo', 'subtitulo', 'imagen', 'activo'] # Orden primero para que veas cuál toca
+        fields = ['orden', 'titulo', 'subtitulo', 'imagen', 'activo']
         widgets = {
             'orden': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Ej: 1'}),
             'titulo': forms.TextInput(attrs={'class': 'form-control'}),
             'subtitulo': forms.TextInput(attrs={'class': 'form-control'}),
-            'imagen': forms.FileInput(attrs={'class': 'form-control'}), # Input de archivo
+            'imagen': forms.FileInput(attrs={'class': 'form-control'}),
             'activo': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
 
