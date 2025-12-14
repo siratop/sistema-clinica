@@ -121,11 +121,12 @@ STATIC_URL = 'static/'
 
 # --- AGREGA ESTA LÍNEA EXACTA: ---
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# Al entrar, vamos al Dashboard (el sistema redirige a Paciente o Admin)
+LOGIN_REDIRECT_URL = 'dashboard'
 
-# Cuando te logueas, te manda a la página de inicio (que llamamos 'home' en urls.py)
-LOGIN_REDIRECT_URL = 'home'
-# Cuando te deslogueas, te manda a la pantalla de login de nuevo
-LOGOUT_REDIRECT_URL = 'login'
+# Al salir, volvemos a la portada pública
+LOGOUT_REDIRECT_URL = 'inicio'
+
 
 
 
