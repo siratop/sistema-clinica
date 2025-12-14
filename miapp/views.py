@@ -198,3 +198,41 @@ def detalle_paciente(request, id):
         'paciente': paciente,
         'historial': historial
     })
+
+# --- AGREGAR NUEVO SLIDE ---
+@login_required
+def crear_slide(request):
+    if not request.user.is_staff: return redirect('dashboard') # Seguridad
+    
+    if request.method == 'POST':
+        form = CarruselForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Imagen agregada al carrusel.")
+            return redirect('gestion_cms')
+    else:
+        form = CarruselForm()
+    
+    return render(request, 'miapp/editar_generico.html', {
+        'form': form, 
+        'titulo': 'Agregar Nueva Imagen al Carrusel'
+    })
+
+# --- AGREGAR NUEVA PREGUNTA ---
+@login_required
+def crear_faq(request):
+    if not request.user.is_staff: return redirect('dashboard') # Seguridad
+
+    if request.method == 'POST':
+        form = PreguntaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Pregunta frecuente creada.")
+            return redirect('gestion_cms')
+    else:
+        form = PreguntaForm()
+
+    return render(request, 'miapp/editar_generico.html', {
+        'form': form, 
+        'titulo': 'Crear Nueva Pregunta Frecuente'
+    })

@@ -19,4 +19,15 @@ urlpatterns = [
     path('registro/', views.registro_paciente, name='registro_paciente'),
     path('cita-invitado/', views.cita_invitado, name='cita_invitado'),
     path('accounts/login/', views.login, name='login'), # Asegúrate de que esto no choque con el login de django
+
+    # CMS GESTIÓN
+    path('cms/', views.gestion_cms, name='gestion_cms'),
+    
+    # Rutas para CREAR (NUEVAS)
+    path('cms/slide/nuevo/', views.crear_slide, name='crear_slide'),
+    path('cms/faq/nuevo/', views.crear_faq, name='crear_faq'),
+
+    # Rutas para EDITAR (YA LAS TENÍAS)
+    path('cms/slide/<int:id>/', views.editar_slide, name='editar_slide'),
+    path('cms/faq/<int:id>/', views.editar_faq, name='editar_faq'),
 ]

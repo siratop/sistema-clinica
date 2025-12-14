@@ -1,20 +1,24 @@
 {% extends 'miapp/base.html' %}
+
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="text-warning-emphasis fw-bold"><i class="fa-solid fa-pen-nib"></i> Gestión de Contenidos Web</h2>
     <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Volver al Panel</a>
 </div>
 
-<div class="card shadow mb-5">
-    <div class="card-header bg-warning text-dark fw-bold">
-        <i class="fa-regular fa-images"></i> Imágenes del Carrusel (Portada)
+<div class="card shadow mb-5 border-warning">
+    <div class="card-header bg-warning text-dark fw-bold d-flex justify-content-between align-items-center">
+        <span><i class="fa-regular fa-images"></i> Imágenes del Carrusel (Portada)</span>
+        <a href="{% url 'crear_slide' %}" class="btn btn-sm btn-dark text-warning fw-bold">
+            <i class="fa-solid fa-plus"></i> Agregar Imagen
+        </a>
     </div>
     <div class="card-body p-0">
         <table class="table table-hover mb-0">
-            <thead>
+            <thead class="table-light">
                 <tr>
                     <th>Orden</th>
-                    <th>Imagen</th>
+                    <th>Vista Previa</th>
                     <th>Título</th>
                     <th>Estado</th>
                     <th>Acción</th>
@@ -24,11 +28,25 @@
                 {% for slide in slides %}
                 <tr>
                     <td>{{ slide.orden }}</td>
-                    <td><img src="{{ slide.imagen_url }}" height="50" class="rounded"></td>
+                    <td><img src="{{ slide.imagen_url }}" height="40" class="rounded shadow-sm"></td>
                     <td>{{ slide.titulo }}</td>
-                    <td>{% if slide.activo %}<span class="badge bg-success">Activo</span>{% else %}<span class="badge bg-secondary">Oculto</span>{% endif %}</td>
                     <td>
-                        <a href="{% url 'editar_slide' slide.id %}" class="btn btn-sm btn-primary">Editar</a>
+                        {% if slide.activo %}
+                            <span class="badge bg-success">Visible</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Oculto</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'editar_slide' slide.id %}" class="btn btn-sm btn-primary">
+                            <i class="fa-solid fa-pen"></i> Editar
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center py-4 text-muted">
+                        No hay imágenes en el carrusel. ¡Agrega la primera!
                     </td>
                 </tr>
                 {% endfor %}
@@ -37,13 +55,16 @@
     </div>
 </div>
 
-<div class="card shadow">
-    <div class="card-header bg-warning text-dark fw-bold">
-        <i class="fa-solid fa-circle-question"></i> Preguntas Frecuentes
+<div class="card shadow border-warning">
+    <div class="card-header bg-warning text-dark fw-bold d-flex justify-content-between align-items-center">
+        <span><i class="fa-solid fa-circle-question"></i> Preguntas Frecuentes</span>
+        <a href="{% url 'crear_faq' %}" class="btn btn-sm btn-dark text-warning fw-bold">
+            <i class="fa-solid fa-plus"></i> Agregar Pregunta
+        </a>
     </div>
     <div class="card-body p-0">
         <table class="table table-hover mb-0">
-            <thead>
+            <thead class="table-light">
                 <tr>
                     <th>Orden</th>
                     <th>Pregunta</th>
@@ -56,9 +77,23 @@
                 <tr>
                     <td>{{ faq.orden }}</td>
                     <td>{{ faq.pregunta }}</td>
-                    <td>{% if faq.activa %}<span class="badge bg-success">Visible</span>{% else %}<span class="badge bg-secondary">Oculta</span>{% endif %}</td>
                     <td>
-                        <a href="{% url 'editar_faq' faq.id %}" class="btn btn-sm btn-primary">Editar</a>
+                        {% if faq.activa %}
+                            <span class="badge bg-success">Visible</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Oculta</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'editar_faq' faq.id %}" class="btn btn-sm btn-primary">
+                            <i class="fa-solid fa-pen"></i> Editar
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center py-4 text-muted">
+                        No hay preguntas registradas.
                     </td>
                 </tr>
                 {% endfor %}
