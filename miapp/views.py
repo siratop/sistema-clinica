@@ -4,8 +4,9 @@ from django.contrib.auth.models import User, Group
 from django.contrib.auth import login
 from django.contrib import messages
 from .models import Paciente, Cita, Documento, PerfilUsuario, CarruselImagen, PreguntaFrecuente
-from .forms import PacienteForm, CitaForm, ConsultaForm, DocumentoForm
+from .forms import PacienteForm, CitaForm, ConsultaForm, DocumentoForm, CarruselForm, PreguntaForm
 import datetime
+
 
 # --- 1. PORTADA CON CMS (CONTENIDO DINÁMICO) ---
 def inicio(request):
