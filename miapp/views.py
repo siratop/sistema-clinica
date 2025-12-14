@@ -131,3 +131,70 @@ def crear_paciente(request):
     else:
         form = PacienteForm()
     return render(request, 'miapp/crear_paciente.html', {'form': form})
+
+# --- GESTIÓN DE CONTENIDOS (PANEL AMIGABLE) ---
+@login_required
+def gestion_cms(request):
+    # Verificamos que sea staff/admin
+    if not request.user.is_staff:
+        messages.error(request, "Acceso denegado.")
+        return redirect('dashboard')
+
+    # Procesar formularios si se envían cambios
+    if request.method == 'POST':
+        # Aquí podrías separar lógica para crear/editar, 
+        # pero para simplificar, mostraremos la lista y botones de editar
+        pass 
+
+    slides = CarruselImagen.objects.all().order_by('orden')
+    faqs = PreguntaFrecuente.objects.all().order_by('orden')
+    
+    return render(request, 'miapp/gestion_cms.html', {
+        'slides': slides,
+        'faqs': faqs
+    })
+
+# --- VISTA PARA EDITAR UN SLIDE ESPECÍFICO ---
+@login_required
+def editar_slide(request, id):
+    slide = get_object_or_404(CarruselImagen, id=id)
+    if request.method == 'POST':
+        form = CarruselForm(request.POST, instance=slide)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Imagen actualizada correctamente.")
+            return redirect('gestion_cms')
+    else:
+        form = CarruselForm(instance=slide)
+    return render(request, 'miapp/editar_generico.html', {'form': form, 'titulo': 'Editar Imagen Carrusel'})
+
+# --- VISTA PARA EDITAR UNA PREGUNTA ---
+@login_required
+def editar_faq(request, id):
+    faq = get_object_or_404(PreguntaFrecuente, id=id)
+    if request.method == 'POST':
+        form = PreguntaForm(request.POST, instance=faq)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Pregunta actualizada correctamente.")
+            return redirect('gestion_cms')
+    else:
+        form = PreguntaForm(instance=faq)
+    return render(request, 'miapp/editar_generico.html', {'form': form, 'titulo': 'Editar Pregunta Frecuente'})
+
+
+# --- HISTORIAL CLÍNICO DEL PACIENTE (ADMIN/MÉDICO) ---
+@login_required
+def detalle_paciente(request, id):
+    # Solo personal médico o admin puede ver esto
+    if hasattr(request.user, 'paciente_perfil'):
+        return redirect('dashboard')
+
+    paciente = get_object_or_404(Paciente, id=id)
+    # Traemos todas las citas, ordenadas por fecha reciente
+    historial = Cita.objects.filter(paciente=paciente).order_by('-fecha')
+
+    return render(request, 'miapp/detalle_paciente.html', {
+        'paciente': paciente,
+        'historial': historial
+    })

@@ -1,59 +1,86 @@
 {% extends 'miapp/base.html' %}
+
 {% block content %}
 <div class="row mb-4">
     <div class="col-12 d-flex justify-content-between align-items-center">
-        <h2 class="text-success fw-bold"><i class="fa-solid fa-user-shield"></i> Administración General</h2>
-        <span class="badge bg-dark">Acceso Total</span>
+        <div>
+            <h2 class="text-success fw-bold mb-0"><i class="fa-solid fa-user-shield"></i> Panel Administrativo</h2>
+            <p class="text-muted mb-0">Bienvenido al centro de control de Clínica Renacer.</p>
+        </div>
+        <span class="badge bg-dark fs-6 shadow-sm">Acceso Total</span>
     </div>
 </div>
 
 <div class="row g-4 mb-5">
+    
     <div class="col-md-4">
-        <div class="card bg-success text-white h-100 shadow hover-effect">
-            <div class="card-body text-center">
-                <i class="fa-solid fa-chart-line fa-3x mb-3"></i>
-                <h3>Finanzas</h3>
-                <p>Ingresos, Egresos y Reportes Contables.</p>
-                <button class="btn btn-light text-success fw-bold w-100">Ver Balance</button>
+        <div class="card bg-success text-white h-100 shadow hover-effect border-0">
+            <div class="card-body text-center p-4">
+                <div class="mb-3 rounded-circle bg-white text-success d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                    <i class="fa-solid fa-chart-line fa-2x"></i>
+                </div>
+                <h3 class="fw-bold">Finanzas</h3>
+                <p class="opacity-75">Ingresos, Egresos y Reportes.</p>
+                <button class="btn btn-light text-success fw-bold w-100 rounded-pill shadow-sm">
+                    Ver Balance
+                </button>
             </div>
         </div>
     </div>
     
     <div class="col-md-4">
-        <div class="card bg-white h-100 shadow border-success hover-effect">
-            <div class="card-body text-center text-success">
-                <i class="fa-solid fa-user-doctor fa-3x mb-3"></i>
-                <h3>Staff Médico</h3>
-                <p>{{ medicos.count }} Doctores Activos</p>
-                <button class="btn btn-outline-success w-100">Gestionar Doctores</button>
+        <div class="card bg-white h-100 shadow border-0 border-top border-5 border-success hover-effect">
+            <div class="card-body text-center p-4">
+                <div class="mb-3 text-success">
+                    <i class="fa-solid fa-user-doctor fa-3x"></i>
+                </div>
+                <h3 class="fw-bold text-secondary">Médicos</h3>
+                <p class="text-muted">{{ medicos.count }} Doctores Activos</p>
+                <button class="btn btn-outline-success w-100 rounded-pill">
+                    Gestionar Staff
+                </button>
             </div>
         </div>
     </div>
 
     <div class="col-md-4">
-        <div class="card bg-white h-100 shadow border-primary hover-effect">
-            <div class="card-body text-center text-primary">
-                <i class="fa-solid fa-users fa-3x mb-3"></i>
-                <h3>Pacientes</h3>
-                <p>{{ total_pacientes }} Registrados</p>
-                <a href="{% url 'lista_pacientes' %}" class="btn btn-outline-primary w-100">Ver Listado</a>
+        <div class="card bg-white h-100 shadow border-0 border-top border-5 border-primary hover-effect">
+            <div class="card-body text-center p-4">
+                <div class="mb-3 text-primary">
+                    <i class="fa-solid fa-users fa-3x"></i>
+                </div>
+                <h3 class="fw-bold text-secondary">Pacientes</h3>
+                <p class="text-muted">{{ total_pacientes }} Registrados en sistema</p>
+                <a href="{% url 'lista_pacientes' %}" class="btn btn-outline-primary w-100 rounded-pill">
+                    Ver Listado Completo
+                </a>
             </div>
         </div>
     </div>
 </div>
 
-<div class="card shadow-sm border-warning mb-5">
-    <div class="card-header bg-warning-subtle fw-bold">
-        <i class="fa-solid fa-pen-nib"></i> Gestión de Contenidos (Página Web)
-    </div>
-    <div class="card-body">
-        <p class="text-muted">Desde aquí puedes editar lo que ven los usuarios en la portada.</p>
-        <a href="/admin/miapp/carruselimagen/" target="_blank" class="btn btn-warning me-2">
-            <i class="fa-regular fa-images"></i> Editar Carrusel
-        </a>
-        <a href="/admin/miapp/preguntafrecuente/" target="_blank" class="btn btn-warning">
-            <i class="fa-solid fa-circle-question"></i> Editar Preguntas Frecuentes
-        </a>
+<hr class="my-5 text-muted">
+
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card shadow border-warning mb-5">
+            <div class="card-header bg-warning bg-opacity-25 border-warning fw-bold text-dark d-flex align-items-center">
+                <i class="fa-solid fa-pen-nib me-2"></i> Mantenimiento de Página Web
+            </div>
+            <div class="card-body p-4 row align-items-center">
+                <div class="col-md-8">
+                    <h5 class="fw-bold">Editor Visual del Sitio</h5>
+                    <p class="text-muted mb-0">
+                        Cambia las imágenes del carrusel de inicio y actualiza las preguntas frecuentes sin necesidad de conocimientos técnicos.
+                    </p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <a href="{% url 'gestion_cms' %}" class="btn btn-warning w-100 shadow-sm fw-bold">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Abrir Editor Web
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

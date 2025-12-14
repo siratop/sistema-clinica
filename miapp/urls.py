@@ -11,4 +11,12 @@ urlpatterns = [
     path('pacientes/nuevo/', views.crear_paciente, name='crear_paciente'),
     path('registro/', views.registro_paciente, name='registro_paciente'),
     path('cita-invitado/', views.cita_invitado, name='cita_invitado'),
+    path('pacientes/<int:id>/', views.detalle_paciente, name='detalle_paciente'), # Historial Clínico
+    path('cms/', views.gestion_cms, name='gestion_cms'), # Panel bonito CMS
+    path('cms/slide/<int:id>/', views.editar_slide, name='editar_slide'),
+    path('cms/faq/<int:id>/', views.editar_faq, name='editar_faq'),
+    
+    path('registro/', views.registro_paciente, name='registro_paciente'),
+    path('cita-invitado/', views.cita_invitado, name='cita_invitado'),
+    path('accounts/login/', views.login, name='login'), # Asegúrate de que esto no choque con el login de django
 ]
