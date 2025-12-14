@@ -31,30 +31,43 @@ class PerfilUsuario(models.Model):
     def __str__(self):
         return f"{self.usuario.username} - {self.get_rol_display()}"
 
-# 3. Paciente (Datos Reales Venezolanos)
+# En miapp/models.py
+
 class Paciente(models.Model):
+    # Enlace con el Usuario (Login)
     usuario = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True, related_name="paciente_perfil")
+    
     SEXO_OPCIONES = [('M', 'Masculino'), ('F', 'Femenino')]
     
+    # Datos Personales
     cedula = models.CharField(max_length=15, unique=True, verbose_name="Cédula (V-/E-)")
-    numero_historia = models.CharField(max_length=20, unique=True, verbose_name="Nº Historia")
     nombre = models.CharField(max_length=100)
     apellido = models.CharField(max_length=100)
     fecha_nacimiento = models.DateField()
     sexo = models.CharField(max_length=1, choices=SEXO_OPCIONES)
-    telefono = models.CharField(max_length=20)
-    correo = models.EmailField(blank=True, null=True)
+    
+    # Contacto
+    telefono = models.CharField(max_length=20, verbose_name="Teléfono")
+    # Correo ahora es opcional explícitamente en el modelo
+    correo = models.EmailField(blank=True, null=True, verbose_name="Correo Electrónico (Opcional)")
     direccion = models.TextField(blank=True)
     
-    # Antecedentes
-    tipo_sangre = models.CharField(max_length=5, blank=True)
-    alergias = models.TextField(blank=True)
-    enfermedades_cronicas = models.TextField(blank=True)
+    # Antecedentes (Simplificados)
+    # Eliminamos 'tipo_sangre'
+    alergias = models.TextField(blank=True, verbose_name="Alergias")
+    enfermedades_cronicas = models.TextField(blank=True, verbose_name="Enfermedades Crónicas")
     
     fecha_registro = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.nombre} {self.apellido}"
+
+    @property
+    def edad(self):
+        today = date.today()
+        if self.fecha_nacimiento:
+            return today.year - self.fecha_nacimiento.year - ((today.month, today.day) < (self.fecha_nacimiento.month, self.fecha_nacimiento.day))
+        return 0
 
     @property
     def edad(self):

@@ -1,25 +1,31 @@
 from django import forms
 from .models import Paciente, Cita, Documento
 
+# En miapp/forms.py
+
 class PacienteForm(forms.ModelForm):
+    # Campos EXTRA para crear el usuario (no se guardan en Paciente, sino en User)
+    username = forms.CharField(label="Nombre de Usuario", widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: mariaperez2025'}))
+    password = forms.CharField(label="Contraseña", widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Crea una contraseña segura'}))
+
     class Meta:
         model = Paciente
-        fields = '__all__'
+        # Excluimos 'usuario' porque se crea automático, y 'numero_historia' ya no existe.
+        exclude = ['usuario', 'fecha_registro']
+        
         widgets = {
             'fecha_nacimiento': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
             'apellido': forms.TextInput(attrs={'class': 'form-control'}),
             'cedula': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: V-12345678'}),
-            'numero_historia': forms.TextInput(attrs={'class': 'form-control'}),
             'sexo': forms.Select(attrs={'class': 'form-select'}),
             'telefono': forms.TextInput(attrs={'class': 'form-control'}),
-            'correo': forms.EmailInput(attrs={'class': 'form-control'}),
+            'correo': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Ayuda a recuperar tu clave (Opcional)'}),
             'direccion': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
-            'tipo_sangre': forms.TextInput(attrs={'class': 'form-control'}),
-            'alergias': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
-            'enfermedades_cronicas': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
+            # Placeholders inteligentes
+            'alergias': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Escribe "Ninguna conocida" si no tienes.'}),
+            'enfermedades_cronicas': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Ej: Asma, Hipertensión... o "Ninguna conocida".'}),
         }
-
 class CitaForm(forms.ModelForm):
     class Meta:
         model = Cita

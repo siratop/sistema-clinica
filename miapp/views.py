@@ -53,38 +53,39 @@ def crear_paciente(request):
 # --- VISTA DE REGISTRO DE PACIENTES ---
 def registro_paciente(request):
     if request.method == 'POST':
-        # Usamos 2 formularios: uno para usuario (clave) y otro para datos médicos
-        # Nota: Por simplicidad en este paso, usaremos el PacienteForm y crearemos el usuario 'dummy' o 
-        # mejor aún: creamos un formulario unificado. 
-        # Para no complicarte, vamos a hacer que el paciente primero cree su usuario.
-        
         form = PacienteForm(request.POST)
         if form.is_valid():
-            # 1. Guardar datos del paciente
-            paciente = form.save(commit=False)
+            # 1. Obtener datos del formulario
+            datos = form.cleaned_data
+            username_elegido = datos['username']
+            password_elegido = datos['password']
             
-            # 2. Crear Usuario de Login automáticamente basado en la Cédula
-            # El usuario será la Cédula y la contraseña será su Cédula (temporalmente)
-            user = User.objects.create_user(
-                username=paciente.cedula, 
-                password=paciente.cedula,  # Contraseña inicial = Cédula
-                first_name=paciente.nombre, 
-                last_name=paciente.apellido
-            )
-            
-            # 3. Asignar Grupo "Pacientes"
-            grupo_pacientes, created = Group.objects.get_or_create(name='Pacientes')
-            user.groups.add(grupo_pacientes)
-            
-            # 4. Conectar y Guardar
-            paciente.usuario = user
-            paciente.save()
-            
-            # 5. Loguear y mandar a su perfil
-            login(request, user)
-            messages.success(request, f"¡Bienvenido {paciente.nombre}! Tu usuario y clave es tu Cédula.")
-            return redirect('dashboard')
-            
+            # 2. Crear Usuario con los datos que la persona eligió
+            try:
+                user = User.objects.create_user(
+                    username=username_elegido, 
+                    password=password_elegido,
+                    first_name=datos['nombre'], 
+                    last_name=datos['apellido'],
+                    email=datos['correo'] # Guardamos el correo en el usuario también
+                )
+                
+                # 3. Asignar Grupo "Pacientes"
+                grupo_pacientes, created = Group.objects.get_or_create(name='Pacientes')
+                user.groups.add(grupo_pacientes)
+                
+                # 4. Guardar Paciente (sin volver a guardar user/pass en el modelo Paciente)
+                paciente = form.save(commit=False)
+                paciente.usuario = user
+                paciente.save()
+                
+                # 5. Loguear y entrar
+                login(request, user)
+                messages.success(request, "¡Registro exitoso! Bienvenido a tu portal.")
+                return redirect('dashboard')
+                
+            except Exception as e:
+                messages.error(request, f"Error al crear usuario: {e}. Quizás ese nombre de usuario ya existe.")
     else:
         form = PacienteForm()
     

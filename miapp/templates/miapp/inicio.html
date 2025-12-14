@@ -6,7 +6,7 @@
         <div class="carousel-item active">
             <img src="https://img.freepik.com/free-photo/blur-hospital_1203-7957.jpg" class="d-block w-100" style="height: 400px; object-fit: cover; filter: brightness(0.6);">
             <div class="carousel-caption">
-                <h1 class="display-4 fw-bold">Clínica Renacer</h1>
+                <h1 class="display-4 fw-bold">Clínica Quirúrgica Renacer</h1>
                 <p class="fs-4">Excelencia médica y tecnología en Ciudad Guayana.</p>
             </div>
         </div>
@@ -43,6 +43,63 @@
             <h3 class="fw-bold">Soy Personal</h3>
             <p class="opacity-75">Acceso administrativo para médicos y enfermeras.</p>
             <a href="{% url 'login' %}" class="btn btn-light text-success fw-bold rounded-pill px-4">Acceso Sistema</a>
+        </div>
+    </div>
+</div>
+
+<div class="container mb-5">
+    <div class="alert alert-warning shadow-sm border-start border-warning border-5" role="alert">
+        <h4 class="alert-heading"><i class="fa-solid fa-bullhorn"></i> Información Importante</h4>
+        <p>
+            Estimados pacientes, recordamos que por motivos de mantenimiento, el área de <strong>Rayos X</strong> 
+            estará cerrada este fin de semana. Las consultas generales operan con normalidad.
+        </p>
+        <hr>
+        <p class="mb-0 small">Administración Clínica Renacer - 14 Dic 2025</p>
+    </div>
+</div>
+
+<div class="row justify-content-center mb-5">
+    <div class="col-md-8">
+        <h2 class="text-center text-success fw-bold mb-4">Preguntas Frecuentes</h2>
+        
+        <div class="accordion shadow-sm" id="faqAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                        ¿Necesito cita previa para emergencias?
+                    </button>
+                </h2>
+                <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        <strong>No.</strong> Nuestra unidad de emergencia trabaja las 24 horas del día por orden de llegada y gravedad (triaje).
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                        ¿Cómo puedo ver mis resultados de laboratorio?
+                    </button>
+                </h2>
+                <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Debes registrarte en la opción <strong>"Soy Paciente"</strong>. Una vez dentro de tu portal, podrás descargar los resultados en PDF.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                        ¿Aceptan seguros internacionales?
+                    </button>
+                </h2>
+                <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Sí, trabajamos con la mayoría de los seguros internacionales. Por favor, pase por admisión para verificar su póliza.
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
