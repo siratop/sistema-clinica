@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 
+import os
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -125,8 +127,7 @@ LOGIN_REDIRECT_URL = 'home'
 # Cuando te deslogueas, te manda a la pantalla de login de nuevo
 LOGOUT_REDIRECT_URL = 'login'
 
-# Configuración para subir archivos (Imágenes y Documentos)
-import os
+
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
