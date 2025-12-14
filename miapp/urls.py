@@ -1,5 +1,7 @@
 from django.urls import path
 from . import views
+from django.conf import settings               
+from django.conf.urls.static import static     
 
 urlpatterns = [
     # Portada Pública
@@ -30,4 +32,10 @@ urlpatterns = [
     # Rutas para EDITAR (YA LAS TENÍAS)
     path('cms/slide/<int:id>/', views.editar_slide, name='editar_slide'),
     path('cms/faq/<int:id>/', views.editar_faq, name='editar_faq'),
+    path('cms/slide/eliminar/<int:id>/', views.eliminar_slide, name='eliminar_slide'),
+    path('cms/faq/eliminar/<int:id>/', views.eliminar_faq, name='eliminar_faq'),
+    path('cms/aviso/editar/', views.editar_aviso, name='editar_aviso'),
+     
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -3,12 +3,15 @@
 <div class="row justify-content-center">
     <div class="col-md-6">
         <div class="card shadow">
-            <div class="card-header bg-primary text-white">{{ titulo }}</div>
+            <div class="card-header bg-primary text-white fw-bold">{{ titulo }}</div>
             <div class="card-body">
-                <form method="post">
+                <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     {{ form.as_p }}
-                    <button type="submit" class="btn btn-success w-100">Guardar Cambios</button>
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{% url 'gestion_cms' %}" class="btn btn-secondary">Cancelar</a>
+                        <button type="submit" class="btn btn-success">Guardar Cambios</button>
+                    </div>
                 </form>
             </div>
         </div>

@@ -3,26 +3,55 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from django.contrib.auth import login
 from django.contrib import messages
-from .models import Paciente, Cita, Documento, PerfilUsuario, CarruselImagen, PreguntaFrecuente
-from .forms import PacienteForm, CitaForm, ConsultaForm, DocumentoForm, CarruselForm, PreguntaForm
 import datetime
 
+# --- IMPORTACIÓN DE MODELOS ---
+from .models import (
+    Paciente, 
+    Cita, 
+    Documento, 
+    PerfilUsuario, 
+    CarruselImagen, 
+    PreguntaFrecuente, 
+    AvisoImportante
+)
 
-# --- 1. PORTADA CON CMS (CONTENIDO DINÁMICO) ---
+# --- IMPORTACIÓN DE FORMULARIOS (Aquí estaba el error antes) ---
+from .forms import (
+    PacienteForm, 
+    CitaForm, 
+    ConsultaForm, 
+    DocumentoForm, 
+    CarruselForm,   # <--- Importante para las fotos
+    PreguntaForm, 
+    AvisoForm       # <--- Importante para el aviso
+)
+
+# ==========================================
+# 1. VISTAS PÚBLICAS (PORTADA)
+# ==========================================
 def inicio(request):
-    # Traemos las imágenes y preguntas activas desde la Base de Datos
+    # Traemos solo lo activo para mostrar al público
     slides = CarruselImagen.objects.filter(activo=True).order_by('orden')
     faqs = PreguntaFrecuente.objects.filter(activa=True).order_by('orden')
+    # Traemos el último aviso activo (si existe)
+    aviso = AvisoImportante.objects.filter(activo=True).last()
     
     return render(request, 'miapp/inicio.html', {
         'slides': slides,
-        'faqs': faqs
+        'faqs': faqs,
+        'aviso': aviso
     })
 
-# --- 2. CEREBRO DEL SISTEMA (DASHBOARD MULTI-ROL) ---
+def cita_invitado(request):
+    return render(request, 'miapp/cita_invitado.html')
+
+# ==========================================
+# 2. CEREBRO DEL SISTEMA (DASHBOARD)
+# ==========================================
 @login_required
 def dashboard(request):
-    # A. CASO PACIENTE: Si el usuario es un paciente, va a su portal
+    # A. CASO PACIENTE: Si es paciente, va a su portal
     if hasattr(request.user, 'paciente_perfil'):
         paciente = request.user.paciente_perfil
         mis_citas = Cita.objects.filter(paciente=paciente).order_by('-fecha')
@@ -31,30 +60,21 @@ def dashboard(request):
             'citas': mis_citas
         })
 
-    # B. CASO PERSONAL: Verificamos qué rol tiene (Médico, Contador, Admin)
+    # B. CASO PERSONAL (Médico, Admin, etc.)
     try:
         perfil = request.user.perfilusuario
         rol = perfil.rol
     except:
-        # Si es superusuario y no tiene perfil creado, lo tratamos como Admin
-        rol = 'administrador'
+        rol = 'administrador' # Por defecto si es superuser
 
-    # --- VISTA DE CONTADOR ---
     if rol == 'contador':
-        # Aquí puedes crear 'miapp/panel_contador.html' después
-        return render(request, 'miapp/dashboard_admin.html', {
-            'rol_titulo': 'Área Contable',
-            'solo_finanzas': True # Variable para ocultar cosas médicas en el template si quieres
-        })
+        return render(request, 'miapp/dashboard_admin.html', {'rol_titulo': 'Área Contable', 'solo_finanzas': True})
 
-    # --- VISTA DE MÉDICO ---
     if rol == 'medico':
-         # El médico ve sus citas de HOY
          citas_hoy = Cita.objects.filter(medico=request.user, fecha=datetime.date.today())
          return render(request, 'miapp/panel_medico.html', {'citas': citas_hoy})
 
-    # --- VISTA DE ADMINISTRADOR (CONTROL TOTAL) ---
-    # Estadísticas Generales
+    # VISTA DE ADMINISTRADOR (Dashboard General)
     total_pacientes = Paciente.objects.count()
     medicos = PerfilUsuario.objects.filter(rol='medico')
     citas_hoy_total = Cita.objects.filter(fecha=datetime.date.today()).count()
@@ -65,148 +85,100 @@ def dashboard(request):
         'citas_hoy': citas_hoy_total
     })
 
-# --- 3. REGISTRO DE PACIENTES (CON USUARIO PERSONALIZADO) ---
+# ==========================================
+# 3. GESTIÓN DE PACIENTES
+# ==========================================
 def registro_paciente(request):
     if request.method == 'POST':
         form = PacienteForm(request.POST)
         if form.is_valid():
-            # Obtener datos limpios del formulario
             datos = form.cleaned_data
-            username_elegido = datos['username']
-            password_elegido = datos['password']
-            
             try:
-                # 1. Crear el Usuario de Login
+                # 1. Crear Usuario
                 user = User.objects.create_user(
-                    username=username_elegido, 
-                    password=password_elegido,
+                    username=datos['username'], 
+                    password=datos['password'],
                     first_name=datos['nombre'], 
                     last_name=datos['apellido'],
                     email=datos['correo']
                 )
+                # 2. Asignar Grupo
+                grupo, _ = Group.objects.get_or_create(name='Pacientes')
+                user.groups.add(grupo)
                 
-                # 2. Asignar Grupo "Pacientes"
-                grupo_pacientes, created = Group.objects.get_or_create(name='Pacientes')
-                user.groups.add(grupo_pacientes)
-                
-                # 3. Guardar Ficha Médica enlazada
+                # 3. Guardar Paciente
                 paciente = form.save(commit=False)
                 paciente.usuario = user
                 paciente.save()
                 
-                # 4. Iniciar sesión automáticamente
                 login(request, user)
-                messages.success(request, "¡Registro exitoso! Bienvenido a tu portal.")
+                messages.success(request, "¡Registro exitoso!")
                 return redirect('dashboard')
-                
             except Exception as e:
-                messages.error(request, f"Error: El nombre de usuario '{username_elegido}' ya está en uso. Prueba con otro.")
+                messages.error(request, f"Error: El usuario ya existe o datos inválidos. {e}")
     else:
         form = PacienteForm()
-    
     return render(request, 'miapp/registro_paciente.html', {'form': form})
 
-# --- 4. CITA INVITADO (SIN REGISTRO) ---
-def cita_invitado(request):
-    return render(request, 'miapp/cita_invitado.html')
-
-# --- 5. GESTIÓN ADMINISTRATIVA (Listados) ---
 @login_required
 def lista_pacientes(request):
-    # Solo personal debería ver esto
-    if hasattr(request.user, 'paciente_perfil'):
-        return redirect('dashboard') # Expulsar si es paciente
-        
-    pacientes = Paciente.objects.all().order_by('-id')
+    # Buscador simple
+    query = request.GET.get('q')
+    if query:
+        pacientes = Paciente.objects.filter(nombre__icontains=query) | Paciente.objects.filter(cedula__icontains=query)
+    else:
+        pacientes = Paciente.objects.all().order_by('-id')
     return render(request, 'miapp/lista_pacientes.html', {'pacientes': pacientes})
 
 @login_required
 def crear_paciente(request):
-    # Vista para que el Admin cree pacientes manualmente
     if request.method == 'POST':
         form = PacienteForm(request.POST)
         if form.is_valid():
-            form.save() # Aquí habría que ajustar si quieres crear usuario también
+            form.save()
             messages.success(request, 'Paciente registrado manualmente.')
             return redirect('lista_pacientes')
     else:
         form = PacienteForm()
     return render(request, 'miapp/crear_paciente.html', {'form': form})
 
-# --- GESTIÓN DE CONTENIDOS (PANEL AMIGABLE) ---
-@login_required
-def gestion_cms(request):
-    # Verificamos que sea staff/admin
-    if not request.user.is_staff:
-        messages.error(request, "Acceso denegado.")
-        return redirect('dashboard')
-
-    # Procesar formularios si se envían cambios
-    if request.method == 'POST':
-        # Aquí podrías separar lógica para crear/editar, 
-        # pero para simplificar, mostraremos la lista y botones de editar
-        pass 
-
-    slides = CarruselImagen.objects.all().order_by('orden')
-    faqs = PreguntaFrecuente.objects.all().order_by('orden')
-    
-    return render(request, 'miapp/gestion_cms.html', {
-        'slides': slides,
-        'faqs': faqs
-    })
-
-# --- VISTA PARA EDITAR UN SLIDE ESPECÍFICO ---
-@login_required
-def editar_slide(request, id):
-    slide = get_object_or_404(CarruselImagen, id=id)
-    if request.method == 'POST':
-        form = CarruselForm(request.POST, instance=slide)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Imagen actualizada correctamente.")
-            return redirect('gestion_cms')
-    else:
-        form = CarruselForm(instance=slide)
-    return render(request, 'miapp/editar_generico.html', {'form': form, 'titulo': 'Editar Imagen Carrusel'})
-
-# --- VISTA PARA EDITAR UNA PREGUNTA ---
-@login_required
-def editar_faq(request, id):
-    faq = get_object_or_404(PreguntaFrecuente, id=id)
-    if request.method == 'POST':
-        form = PreguntaForm(request.POST, instance=faq)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Pregunta actualizada correctamente.")
-            return redirect('gestion_cms')
-    else:
-        form = PreguntaForm(instance=faq)
-    return render(request, 'miapp/editar_generico.html', {'form': form, 'titulo': 'Editar Pregunta Frecuente'})
-
-
-# --- HISTORIAL CLÍNICO DEL PACIENTE (ADMIN/MÉDICO) ---
 @login_required
 def detalle_paciente(request, id):
-    # Solo personal médico o admin puede ver esto
-    if hasattr(request.user, 'paciente_perfil'):
-        return redirect('dashboard')
-
+    # Ficha técnica e historial
     paciente = get_object_or_404(Paciente, id=id)
-    # Traemos todas las citas, ordenadas por fecha reciente
     historial = Cita.objects.filter(paciente=paciente).order_by('-fecha')
-
     return render(request, 'miapp/detalle_paciente.html', {
         'paciente': paciente,
         'historial': historial
     })
 
-# --- AGREGAR NUEVO SLIDE ---
+# ==========================================
+# 4. GESTIÓN CMS (CARRUSEL, FAQ, AVISOS)
+# ==========================================
+@login_required
+def gestion_cms(request):
+    if not request.user.is_staff: return redirect('dashboard')
+
+    slides = CarruselImagen.objects.all().order_by('orden')
+    faqs = PreguntaFrecuente.objects.all().order_by('orden')
+    
+    # Busca el aviso existente o toma el último creado
+    aviso = AvisoImportante.objects.last()
+    
+    return render(request, 'miapp/gestion_cms.html', {
+        'slides': slides,
+        'faqs': faqs,
+        'aviso': aviso
+    })
+
+# --- CARRUSEL (SLIDES) ---
 @login_required
 def crear_slide(request):
-    if not request.user.is_staff: return redirect('dashboard') # Seguridad
+    if not request.user.is_staff: return redirect('dashboard')
     
     if request.method == 'POST':
-        form = CarruselForm(request.POST)
+        # request.FILES es OBLIGATORIO para subir imágenes
+        form = CarruselForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             messages.success(request, "Imagen agregada al carrusel.")
@@ -214,16 +186,33 @@ def crear_slide(request):
     else:
         form = CarruselForm()
     
-    return render(request, 'miapp/editar_generico.html', {
-        'form': form, 
-        'titulo': 'Agregar Nueva Imagen al Carrusel'
-    })
+    return render(request, 'miapp/editar_generico.html', {'form': form, 'titulo': 'Agregar Nueva Imagen'})
 
-# --- AGREGAR NUEVA PREGUNTA ---
+@login_required
+def editar_slide(request, id):
+    slide = get_object_or_404(CarruselImagen, id=id)
+    if request.method == 'POST':
+        form = CarruselForm(request.POST, request.FILES, instance=slide)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Imagen actualizada.")
+            return redirect('gestion_cms')
+    else:
+        form = CarruselForm(instance=slide)
+    return render(request, 'miapp/editar_generico.html', {'form': form, 'titulo': 'Editar Imagen Carrusel'})
+
+@login_required
+def eliminar_slide(request, id):
+    if not request.user.is_staff: return redirect('dashboard')
+    slide = get_object_or_404(CarruselImagen, id=id)
+    slide.delete()
+    messages.success(request, "Imagen eliminada del carrusel.")
+    return redirect('gestion_cms')
+
+# --- PREGUNTAS FRECUENTES (FAQ) ---
 @login_required
 def crear_faq(request):
-    if not request.user.is_staff: return redirect('dashboard') # Seguridad
-
+    if not request.user.is_staff: return redirect('dashboard')
     if request.method == 'POST':
         form = PreguntaForm(request.POST)
         if form.is_valid():
@@ -232,8 +221,51 @@ def crear_faq(request):
             return redirect('gestion_cms')
     else:
         form = PreguntaForm()
+    return render(request, 'miapp/editar_generico.html', {'form': form, 'titulo': 'Crear Pregunta Frecuente'})
 
-    return render(request, 'miapp/editar_generico.html', {
-        'form': form, 
-        'titulo': 'Crear Nueva Pregunta Frecuente'
-    })
+@login_required
+def editar_faq(request, id):
+    faq = get_object_or_404(PreguntaFrecuente, id=id)
+    if request.method == 'POST':
+        form = PreguntaForm(request.POST, instance=faq)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Pregunta actualizada.")
+            return redirect('gestion_cms')
+    else:
+        form = PreguntaForm(instance=faq)
+    return render(request, 'miapp/editar_generico.html', {'form': form, 'titulo': 'Editar Pregunta'})
+
+@login_required
+def eliminar_faq(request, id):
+    if not request.user.is_staff: return redirect('dashboard')
+    faq = get_object_or_404(PreguntaFrecuente, id=id)
+    faq.delete()
+    messages.success(request, "Pregunta eliminada.")
+    return redirect('gestion_cms')
+
+# --- AVISO IMPORTANTE ---
+@login_required
+def editar_aviso(request):
+    if not request.user.is_staff: return redirect('dashboard')
+    
+    # Buscar el último aviso o crear uno temporal en memoria si no existe
+    aviso = AvisoImportante.objects.last()
+    
+    if request.method == 'POST':
+        if aviso:
+            form = AvisoForm(request.POST, instance=aviso)
+        else:
+            form = AvisoForm(request.POST) # Crea uno nuevo si no había
+            
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Aviso importante actualizado.")
+            return redirect('gestion_cms')
+    else:
+        if aviso:
+            form = AvisoForm(instance=aviso)
+        else:
+            form = AvisoForm()
+            
+    return render(request, 'miapp/editar_generico.html', {'form': form, 'titulo': 'Editar Aviso Importante'})

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Paciente, Cita, Documento
+from .models import Paciente, Cita, ConsultaForm, Documento, CarruselImagen, PreguntaFrecuente, AvisoImportante
 
 # En miapp/forms.py
 
@@ -63,22 +63,32 @@ from .models import CarruselImagen, PreguntaFrecuente
 class CarruselForm(forms.ModelForm):
     class Meta:
         model = CarruselImagen
-        fields = ['titulo', 'subtitulo', 'imagen_url', 'orden', 'activo']
+        fields = ['orden', 'titulo', 'subtitulo', 'imagen', 'activo'] # Orden primero para que veas cuál toca
         widgets = {
+            'orden': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Ej: 1'}),
             'titulo': forms.TextInput(attrs={'class': 'form-control'}),
             'subtitulo': forms.TextInput(attrs={'class': 'form-control'}),
-            'imagen_url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'https://...'}),
-            'orden': forms.NumberInput(attrs={'class': 'form-control'}),
+            'imagen': forms.FileInput(attrs={'class': 'form-control'}), # Input de archivo
             'activo': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
 
 class PreguntaForm(forms.ModelForm):
     class Meta:
         model = PreguntaFrecuente
-        fields = ['pregunta', 'respuesta', 'orden', 'activa']
+        fields = ['orden', 'pregunta', 'respuesta', 'activa']
         widgets = {
+            'orden': forms.NumberInput(attrs={'class': 'form-control'}),
             'pregunta': forms.TextInput(attrs={'class': 'form-control'}),
             'respuesta': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
-            'orden': forms.NumberInput(attrs={'class': 'form-control'}),
             'activa': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+
+class AvisoForm(forms.ModelForm):
+    class Meta:
+        model = AvisoImportante
+        fields = ['titulo', 'mensaje', 'activo']
+        widgets = {
+            'titulo': forms.TextInput(attrs={'class': 'form-control'}),
+            'mensaje': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
+            'activo': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
