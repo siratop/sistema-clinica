@@ -1,0 +1,75 @@
+{% extends 'miapp/base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h2 class="text-success"><i class="fa-solid fa-user-check"></i> Bienvenido, {{ paciente.nombre }}</h2>
+        <p class="text-muted">Aquí puedes gestionar tu salud y ver tus próximas consultas.</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <div class="card bg-light border-0">
+            <div class="card-body">
+                <small class="fw-bold text-uppercase text-muted">Tu Historia Clínica</small>
+                <h3 class="text-dark m-0">{{ paciente.numero_historia }}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fa-solid fa-calendar-days"></i> Mis Citas Médicas</h5>
+                <button class="btn btn-sm btn-light text-success fw-bold">+ Nueva Cita</button>
+            </div>
+            <div class="card-body p-0">
+                {% if citas %}
+                    <div class="list-group list-group-flush">
+                    {% for cita in citas %}
+                        <div class="list-group-item p-3">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1 text-success">{{ cita.fecha|date:"d M Y" }} - {{ cita.hora }}</h5>
+                                <small class="{% if cita.realizada %}text-muted{% else %}text-warning fw-bold{% endif %}">
+                                    {% if cita.realizada %}Finalizada{% else %}Pendiente{% endif %}
+                                </small>
+                            </div>
+                            <p class="mb-1">Dr. {{ cita.medico.first_name }} {{ cita.medico.last_name }}</p>
+                            <small class="text-muted">{{ cita.motivo }}</small>
+                            
+                            {% if cita.realizada %}
+                            <div class="mt-2">
+                                <a href="#" class="btn btn-sm btn-outline-success"><i class="fa-solid fa-file-pdf"></i> Ver Receta</a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="p-5 text-center text-muted">
+                        <i class="fa-regular fa-calendar-xmark fa-3x mb-3"></i>
+                        <p>No tienes citas registradas.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <h5 class="card-title text-secondary mb-3">Mis Datos</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><strong>Cédula:</strong> {{ paciente.cedula }}</li>
+                    <li class="mb-2"><strong>Edad:</strong> {{ paciente.edad }} años</li>
+                    <li class="mb-2"><strong>Sangre:</strong> {{ paciente.tipo_sangre|default:"--" }}</li>
+                    <li class="mb-2"><strong>Teléfono:</strong> {{ paciente.telefono }}</li>
+                </ul>
+                <hr>
+                <small class="text-muted d-block mb-2">¿Datos incorrectos?</small>
+                <a href="#" class="btn btn-outline-secondary btn-sm w-100">Solicitar Corrección</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

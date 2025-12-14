@@ -33,6 +33,7 @@ class PerfilUsuario(models.Model):
 
 # 3. Paciente (Datos Reales Venezolanos)
 class Paciente(models.Model):
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True, related_name="paciente_perfil")
     SEXO_OPCIONES = [('M', 'Masculino'), ('F', 'Femenino')]
     
     cedula = models.CharField(max_length=15, unique=True, verbose_name="Cédula (V-/E-)")
