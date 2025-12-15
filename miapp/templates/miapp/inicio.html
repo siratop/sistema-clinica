@@ -7,28 +7,31 @@
     <div class="carousel-indicators">
         {% for slide in slides %}
         <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}"></button>
-        {% empty %}
-        <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="0" class="active"></button>
         {% endfor %}
     </div>
 
     <div class="carousel-inner">
         {% for slide in slides %}
-        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+        <div class="carousel-item {% if forloop.first %}active{% endif %}" style="position: relative; cursor: pointer;" onclick="abrirImagen('{{ slide.imagen.url }}', '{{ slide.titulo }}')">
+            
             {% if slide.imagen %}
-            <img src="{{ slide.imagen.url }}" class="d-block w-100" style="height: 400px; object-fit: cover; filter: brightness(0.7);">
+            <img src="{{ slide.imagen.url }}" class="d-block w-100" style="height: 500px; object-fit: cover;">
+            
+            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0, {{ slide.overlay }});"></div>
             {% endif %}
+
             <div class="carousel-caption d-none d-md-block">
-                <h1 class="display-4 fw-bold">{{ slide.titulo }}</h1>
-                <p class="fs-4">{{ slide.subtitulo }}</p>
+                <h1 class="display-4 fw-bold text-white text-shadow">{{ slide.titulo }}</h1>
+                <p class="fs-4 text-white text-shadow">{{ slide.subtitulo }}</p>
+                <small class="btn btn-outline-light btn-sm mt-2 rounded-pill"><i class="fa-solid fa-expand"></i> Ver Anuncio Completo</small>
             </div>
         </div>
         {% empty %}
         <div class="carousel-item active">
-            <img src="https://img.freepik.com/free-photo/blur-hospital_1203-7957.jpg" class="d-block w-100" style="height: 400px; object-fit: cover; filter: brightness(0.6);">
+            <img src="https://img.freepik.com/free-photo/blur-hospital_1203-7957.jpg" class="d-block w-100" style="height: 500px; object-fit: cover; filter: brightness(0.6);">
             <div class="carousel-caption">
                 <h1 class="display-4 fw-bold">Clínica Renacer</h1>
-                <p class="fs-4">Excelencia médica y tecnología en Ciudad Guayana.</p>
+                <p>Bienvenido a nuestro portal de salud.</p>
             </div>
         </div>
         {% endfor %}
@@ -42,13 +45,38 @@
     </button>
 </div>
 
+<div class="modal fade" id="modalImagen" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content bg-transparent border-0">
+            <div class="modal-header border-0">
+                <h5 class="modal-title text-white fw-bold text-shadow" id="modalTitulo"></h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img src="" id="imagenEnGrande" class="img-fluid rounded shadow-lg" style="max-height: 85vh;">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function abrirImagen(url, titulo) {
+        // Asignar la imagen y el título al modal
+        document.getElementById('imagenEnGrande').src = url;
+        document.getElementById('modalTitulo').innerText = titulo;
+        // Abrir el modal
+        var myModal = new bootstrap.Modal(document.getElementById('modalImagen'));
+        myModal.show();
+    }
+</script>
+
+
 <div class="row text-center g-4 justify-content-center">
-    
     <div class="col-md-4">
         <div class="card p-4 shadow-sm h-100 border-0 hover-effect">
             <div class="mb-3 text-success"><i class="fa-solid fa-hospital-user fa-3x"></i></div>
             <h4 class="fw-bold">Soy Paciente</h4>
-            <p class="text-muted small">Historial clínico, resultados online y recetas.</p>
+            <p class="text-muted small">Agenda citas, historial clínico y resultados.</p>
             <div class="d-grid gap-2">
                 <a href="{% url 'registro_paciente' %}" class="btn btn-outline-success rounded-pill">Registrarme</a>
                 <a href="{% url 'login' %}" class="btn btn-sm text-success">Ya tengo cuenta</a>
@@ -60,10 +88,7 @@
         <div class="card p-4 shadow-sm h-100 border-0 hover-effect bg-light">
             <div class="mb-3 text-secondary"><i class="fa-solid fa-calendar-check fa-3x"></i></div>
             <h4 class="fw-bold text-secondary">Cita Rápida</h4>
-            <p class="text-muted small">
-                Agenda sin registrarte.<br>
-                <span class="text-danger"><i class="fa-solid fa-triangle-exclamation"></i> Nota:</span> No guarda historial.
-            </p>
+            <p class="text-muted small">Agenda sin registro.<br><span class="text-danger fw-bold">Nota:</span> No guarda historial.</p>
             <div class="d-grid mt-auto">
                 <a href="{% url 'cita_invitado' %}" class="btn btn-secondary rounded-pill">Agendar como Invitado</a>
             </div>
@@ -74,7 +99,7 @@
         <div class="card p-4 shadow-sm h-100 border-0 bg-success text-white">
             <div class="mb-3 text-white"><i class="fa-solid fa-user-doctor fa-3x"></i></div>
             <h4 class="fw-bold">Soy Personal</h4>
-            <p class="opacity-75 small">Acceso exclusivo médicos y administrativos.</p>
+            <p class="opacity-75 small">Acceso administrativo y médico.</p>
             <div class="d-grid mt-auto">
                 <a href="{% url 'login' %}" class="btn btn-light text-success fw-bold rounded-pill">Acceso Sistema</a>
             </div>
@@ -96,7 +121,6 @@
 <div class="row justify-content-center my-5">
     <div class="col-md-8">
         <h3 class="text-center text-secondary fw-bold mb-4">Preguntas Frecuentes</h3>
-        
         <div class="accordion shadow-sm" id="faqAccordion">
             {% for faq in faqs %}
             <div class="accordion-item">
@@ -110,10 +134,17 @@
                 </div>
             </div>
             {% empty %}
-            <p class="text-center text-muted">No hay preguntas registradas aún.</p>
+            <p class="text-center text-muted">No hay preguntas registradas.</p>
             {% endfor %}
         </div>
     </div>
 </div>
+
+<style>
+    /* Sombra para que el texto resalte sobre cualquier imagen */
+    .text-shadow {
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+    }
+</style>
 
 {% endblock %}
