@@ -99,18 +99,28 @@ class Documento(models.Model):
 
 # Carrusel de Imágenes (Portada)
 class CarruselImagen(models.Model):
+    # Opciones de oscuridad para el filtro
+    OPACIDAD_CHOICES = [
+        ('0', '0% - Imagen Original (Clara)'),
+        ('0.3', '30% - Oscurecimiento Leve'),
+        ('0.5', '50% - Oscurecimiento Medio (Recomendado)'),
+        ('0.7', '70% - Oscurecimiento Alto (Para texto difícil)'),
+    ]
+
     titulo = models.CharField(max_length=100)
     subtitulo = models.CharField(max_length=200, blank=True)
-    # CAMBIO IMPORTANTE: ImageField permite subir archivos desde la PC
-    imagen = models.ImageField(upload_to='carrusel/', verbose_name="Subir Imagen") 
-    orden = models.IntegerField(default=1, help_text="Define el orden (1 sale primero)")
+    imagen = models.ImageField(upload_to='carrusel/', verbose_name="Subir Imagen")
+    # NUEVO CAMPO:
+    overlay = models.CharField(max_length=5, choices=OPACIDAD_CHOICES, default='0.5', verbose_name="Opacidad del Filtro")
+    
+    orden = models.IntegerField(default=1)
     activo = models.BooleanField(default=True)
 
     def __str__(self):
         return f"{self.orden}. {self.titulo}"
     
     class Meta:
-        ordering = ['orden'] # Ordena automáticamente por el número
+        ordering = ['orden']
 
 # Preguntas Frecuentes (FAQ)
 class PreguntaFrecuente(models.Model):

@@ -64,13 +64,19 @@ class DocumentoForm(forms.ModelForm):
 class CarruselForm(forms.ModelForm):
     class Meta:
         model = CarruselImagen
-        fields = ['orden', 'titulo', 'subtitulo', 'imagen', 'activo']
+        fields = ['orden', 'titulo', 'subtitulo', 'imagen', 'overlay', 'activo'] # Agregamos 'overlay'
         widgets = {
             'orden': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Ej: 1'}),
             'titulo': forms.TextInput(attrs={'class': 'form-control'}),
             'subtitulo': forms.TextInput(attrs={'class': 'form-control'}),
             'imagen': forms.FileInput(attrs={'class': 'form-control'}),
+            'overlay': forms.Select(attrs={'class': 'form-select'}), # Selector desplegable
             'activo': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+        # AQUÍ PONEMOS EL CONSEJO DE LAS MEDIDAS
+        help_texts = {
+            'imagen': '<strong class="text-danger">Importante:</strong> Para que se vea perfecto, usa imágenes horizontales de <strong>1920 x 600 pixeles</strong> (o formato 16:9).',
+            'overlay': 'Elige qué tan oscura quieres la imagen para que el texto blanco se pueda leer.',
         }
 
 class PreguntaForm(forms.ModelForm):
