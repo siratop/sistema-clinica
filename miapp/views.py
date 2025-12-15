@@ -16,19 +16,20 @@ from .models import (
     AvisoImportante
 )
 
-# --- IMPORTACIÓN DE FORMULARIOS (Aquí estaba el error antes) ---
+# --- IMPORTACIÓN DE FORMULARIOS ---
 from .forms import (
     PacienteForm, 
     CitaForm, 
     ConsultaForm, 
     DocumentoForm, 
-    CarruselForm,   # <--- Importante para las fotos
+    CarruselForm,   
     PreguntaForm, 
-    AvisoForm       # <--- Importante para el aviso
+    AvisoForm,
+    CitaInvitadoForm  # <--- NUEVO: Formulario para invitados
 )
 
 # ==========================================
-# 1. VISTAS PÚBLICAS (PORTADA)
+# 1. VISTAS PÚBLICAS (PORTADA Y CITAS)
 # ==========================================
 def inicio(request):
     # Traemos solo lo activo para mostrar al público
@@ -43,8 +44,49 @@ def inicio(request):
         'aviso': aviso
     })
 
+# --- LÓGICA DE CITA RÁPIDA (NUEVO) ---
 def cita_invitado(request):
-    return render(request, 'miapp/cita_invitado.html')
+    if request.method == 'POST':
+        form = CitaInvitadoForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            
+            # 1. BUSCAR O CREAR EL PACIENTE AUTOMÁTICAMENTE
+            # Si la cédula ya existe, usamos ese paciente. Si no, creamos uno nuevo.
+            paciente, created = Paciente.objects.get_or_create(
+                cedula=data['cedula'],
+                defaults={
+                    'nombre': data['nombre'],
+                    'apellido': data['apellido'],
+                    'telefono': data['telefono'],
+                    'fecha_nacimiento': data['fecha_nacimiento'],
+                    'sexo': data['sexo']
+                    # Nota: No creamos usuario de login, es solo un registro médico
+                }
+            )
+            
+            # Si el paciente ya existía, actualizamos su teléfono por si acaso cambió
+            if not created:
+                paciente.telefono = data['telefono']
+                paciente.save()
+
+            # 2. CREAR LA CITA EN EL SISTEMA
+            Cita.objects.create(
+                paciente=paciente,
+                medico=data['medico'],
+                fecha=data['fecha'],
+                hora=data['hora'],
+                motivo=data['motivo'],
+                estado='pendiente'
+            )
+            
+            messages.success(request, f"¡Listo {data['nombre']}! Tu cita ha sido agendada con éxito.")
+            return redirect('inicio')
+            
+    else:
+        form = CitaInvitadoForm()
+    
+    return render(request, 'miapp/cita_invitado.html', {'form': form})
 
 # ==========================================
 # 2. CEREBRO DEL SISTEMA (DASHBOARD)

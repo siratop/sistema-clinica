@@ -1,16 +1,78 @@
 {% extends 'miapp/base.html' %}
 {% block content %}
-<div class="container text-center mt-5">
-    <i class="fa-solid fa-calendar-clock fa-5x text-secondary mb-4"></i>
-    <h2 class="fw-bold">Agendar Cita como Invitado</h2>
-    <p class="lead text-muted">
-        Estás agendando una cita sin registrarte.<br>
-        Recuerda que no podrás consultar esta cita online posteriormente.
-    </p>
-    <div class="alert alert-warning d-inline-block">
-        <i class="fa-solid fa-hammer"></i> Módulo en construcción.
+
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-secondary text-white py-3">
+                <h4 class="mb-0"><i class="fa-solid fa-calendar-plus"></i> Agendar Cita Rápida (Invitado)</h4>
+            </div>
+            
+            <div class="card-body p-4">
+                <div class="alert alert-warning border-warning">
+                    <i class="fa-solid fa-triangle-exclamation"></i> <strong>Aviso:</strong> 
+                    Al usar esta opción, no podrás consultar tu historial ni ver resultados en línea. 
+                    Si deseas esos beneficios, <a href="{% url 'registro_paciente' %}" class="alert-link">Regístrate aquí</a>.
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <h5 class="text-secondary border-bottom pb-2 mb-3">1. Datos del Paciente</h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Cédula</label>
+                            {{ form.cedula }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Nombre</label>
+                            {{ form.nombre }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Apellido</label>
+                            {{ form.apellido }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Teléfono</label>
+                            {{ form.telefono }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Fecha Nacimiento</label>
+                            {{ form.fecha_nacimiento }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Sexo</label>
+                            {{ form.sexo }}
+                        </div>
+                    </div>
+
+                    <h5 class="text-success border-bottom pb-2 mb-3">2. Datos de la Consulta</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Médico Especialista</label>
+                            {{ form.medico }}
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold">Fecha Deseada</label>
+                            {{ form.fecha }}
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold">Hora</label>
+                            {{ form.hora }}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Motivo de Consulta</label>
+                            {{ form.motivo }}
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-5">
+                        <a href="{% url 'inicio' %}" class="btn btn-outline-secondary px-4">Cancelar</a>
+                        <button type="submit" class="btn btn-success btn-lg px-5 shadow">Confirmar Cita</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-    <br>
-    <a href="{% url 'inicio' %}" class="btn btn-outline-secondary mt-3">Volver</a>
 </div>
 {% endblock %}

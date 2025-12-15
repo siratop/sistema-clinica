@@ -99,3 +99,25 @@ class AvisoForm(forms.ModelForm):
             'mensaje': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
             'activo': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
+
+    # --- FORMULARIO CITA RÁPIDA (INVITADO) ---
+from django.contrib.auth.models import User # Asegúrate de importar User
+
+class CitaInvitadoForm(forms.Form):
+    # 1. Datos del Paciente (Para identificarlo)
+    cedula = forms.CharField(label="Cédula", widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: V-12345678'}))
+    nombre = forms.CharField(label="Nombre", widget=forms.TextInput(attrs={'class': 'form-control'}))
+    apellido = forms.CharField(label="Apellido", widget=forms.TextInput(attrs={'class': 'form-control'}))
+    telefono = forms.CharField(label="Teléfono", widget=forms.TextInput(attrs={'class': 'form-control'}))
+    fecha_nacimiento = forms.DateField(label="Fecha de Nacimiento", widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}))
+    sexo = forms.ChoiceField(label="Sexo", choices=[('M', 'Masculino'), ('F', 'Femenino')], widget=forms.Select(attrs={'class': 'form-select'}))
+
+    # 2. Datos de la Cita
+    medico = forms.ModelChoiceField(
+        queryset=User.objects.filter(perfilusuario__rol='medico'), # Solo mostramos doctores
+        label="Médico Especialista", 
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+    fecha = forms.DateField(label="Fecha Deseada", widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}))
+    hora = forms.TimeField(label="Hora Preferida", widget=forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}))
+    motivo = forms.CharField(label="Motivo de Consulta", widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 2}))    
