@@ -1,5 +1,7 @@
 from django.urls import path
 from . import views
+# Importamos la vista de login estándar de Django
+from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -8,20 +10,23 @@ urlpatterns = [
     path('', views.inicio, name='inicio'),
     path('cita-invitado/', views.cita_invitado, name='cita_invitado'),
     
-    # --- REGISTROS Y LOGIN ---
-    path('registro/', views.registro_paciente, name='registro_paciente'),
-    path('registro-personal/', views.registro_personal, name='registro_personal'), # <--- NUEVA
-    path('accounts/login/', views.login, name='login'), # (O usa el de django auth si lo tienes configurado en config/urls.py)
+    # --- AUTENTICACIÓN (LOGIN / LOGOUT) ---
+    # Usamos la vista estándar para login
+    path('accounts/login/', auth_views.LoginView.as_view(), name='login'),
+    # Usamos nuestra vista personalizada para logout (para evitar el error 405)
+    path('salir/', views.cerrar_sesion, name='logout'),
 
-    # --- DASHBOARD CENTRAL ---
+    # --- REGISTROS ---
+    path('registro/', views.registro_paciente, name='registro_paciente'),
+    path('registro-personal/', views.registro_personal, name='registro_personal'),
+
+    # --- DASHBOARD Y GESTIÓN ---
     path('dashboard/', views.dashboard, name='dashboard'),
-    
-    # --- PACIENTES ---
     path('pacientes/', views.lista_pacientes, name='lista_pacientes'),
     path('pacientes/nuevo/', views.crear_paciente, name='crear_paciente'),
     path('pacientes/<int:id>/', views.detalle_paciente, name='detalle_paciente'),
 
-    # --- CMS (PÁGINA WEB) ---
+    # --- CMS ---
     path('cms/', views.gestion_cms, name='gestion_cms'),
     path('cms/slide/nuevo/', views.crear_slide, name='crear_slide'),
     path('cms/slide/<int:id>/', views.editar_slide, name='editar_slide'),
@@ -31,7 +36,7 @@ urlpatterns = [
     path('cms/faq/eliminar/<int:id>/', views.eliminar_faq, name='eliminar_faq'),
     path('cms/aviso/editar/', views.editar_aviso, name='editar_aviso'),
 
-    # --- ENFERMERÍA (NUEVA) ---
+    # --- ENFERMERÍA ---
     path('orden/ejecutar/<int:id>/', views.ejecutar_orden, name='ejecutar_orden'),
 ]
 
