@@ -36,7 +36,7 @@ class MovimientoContableAdmin(admin.ModelAdmin):
     list_filter = ('tipo', 'fecha', 'es_divisa')
     search_fields = ('descripcion', 'referencia')
     date_hierarchy = 'fecha'
-    list_editable = ('tipo',) # Esto funciona porque 'fecha' es el link por defecto (el primero)
+    list_editable = ('tipo',) # Esto funciona bien porque 'fecha' es el enlace por defecto
 
 # ==========================================
 # 3. GESTIÓN MÉDICA
@@ -62,14 +62,14 @@ class OrdenMedicaAdmin(admin.ModelAdmin):
 class CarruselAdmin(admin.ModelAdmin):
     list_display = ('orden', 'titulo', 'activo')
     list_editable = ('orden', 'activo') 
-    # SOLUCIÓN: Hacemos que 'titulo' sea el link, liberando a 'orden' para editarse
+    # SOLUCIÓN: Hacemos que 'titulo' sea el enlace, liberando a 'orden' para editarse
     list_display_links = ('titulo',) 
     ordering = ('orden',)
 
 class PreguntaAdmin(admin.ModelAdmin):
     list_display = ('orden', 'pregunta', 'activa')
     list_editable = ('orden', 'activa')
-    # SOLUCIÓN: Hacemos que 'pregunta' sea el link
+    # SOLUCIÓN: Hacemos que 'pregunta' sea el enlace
     list_display_links = ('pregunta',)
     ordering = ('orden',)
 
