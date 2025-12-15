@@ -1,0 +1,84 @@
+{% extends 'miapp/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold"><i class="fa-solid fa-calculator"></i> Departamento Contable</h2>
+        <p class="text-muted mb-0">Usuario: {{ user.username }}</p>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="alert alert-success mb-0 text-center shadow-sm">
+                <small>INGRESOS TOTALES</small>
+                <h3 class="fw-bold">${{ ingresos }}</h3>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="alert alert-danger mb-0 text-center shadow-sm">
+                <small>GASTOS TOTALES</small>
+                <h3 class="fw-bold">${{ egresos }}</h3>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="alert alert-primary mb-0 text-center shadow-sm">
+                <small>BALANCE NETO</small>
+                <h3 class="fw-bold">${{ balance }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Registrar Movimiento</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-2">{{ form.as_p }}</div>
+                        <button type="submit" class="btn btn-primary w-100 mt-3">Guardar Registro</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0 text-muted">Libro Diario</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-sm table-striped mb-0">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Tipo</th>
+                                <th>Descripción</th>
+                                <th>Monto</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for mov in movimientos %}
+                            <tr>
+                                <td>{{ mov.fecha|date:"d/m" }}</td>
+                                <td>
+                                    {% if mov.tipo == 'ingreso' %}
+                                        <span class="text-success fw-bold">IN</span>
+                                    {% else %}
+                                        <span class="text-danger fw-bold">OUT</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ mov.descripcion }}</td>
+                                <td class="text-end fw-bold">${{ mov.monto }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

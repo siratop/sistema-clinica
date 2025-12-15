@@ -1,0 +1,35 @@
+{% extends 'miapp/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-dark fw-bold"><i class="fa-solid fa-user-doctor"></i> Directorio Médico</h2>
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-dark">Volver</a>
+    </div>
+
+    <div class="row g-4">
+        {% for doc in medicos %}
+        <div class="col-md-4 col-lg-3">
+            <div class="card h-100 shadow border-0 text-center">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <i class="fa-solid fa-user-md fa-4x text-success bg-light p-3 rounded-circle"></i>
+                    </div>
+                    <h5 class="fw-bold">{{ doc.usuario.first_name }} {{ doc.usuario.last_name }}</h5>
+                    <span class="badge bg-info text-dark mb-3">{{ doc.especialidad.nombre }}</span>
+                    <p class="text-muted small">
+                        <i class="fa-solid fa-phone"></i> {{ doc.telefono|default:"Sin teléfono" }}<br>
+                        <i class="fa-solid fa-id-card"></i> {{ doc.cedula }}
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <h4 class="text-muted">No hay médicos registrados todavía.</h4>
+            <p>Ve a "Autorizaciones" para dar de alta a un doctor.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

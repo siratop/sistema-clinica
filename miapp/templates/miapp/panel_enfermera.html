@@ -1,0 +1,53 @@
+{% extends 'miapp/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-warning text-dark fw-bold"><i class="fa-solid fa-user-nurse"></i> Estación de Enfermería</h2>
+        <span class="badge bg-dark p-2">{{ user.username }}</span>
+    </div>
+
+    <div class="card shadow border-0">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0"><i class="fa-solid fa-syringe"></i> Órdenes Médicas Pendientes</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Hora</th>
+                            <th>Doctor</th>
+                            <th>Paciente</th>
+                            <th>Indicación / Tratamiento</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for orden in ordenes %}
+                        <tr>
+                            <td>{{ orden.fecha_creacion|time:"H:i" }}</td>
+                            <td class="text-primary fw-bold">Dr. {{ orden.medico.last_name }}</td>
+                            <td>{{ orden.paciente.nombre }} {{ orden.paciente.apellido }}</td>
+                            <td>{{ orden.indicacion }}</td>
+                            <td>
+                                <a href="{% url 'ejecutar_orden' orden.id %}" class="btn btn-success btn-sm fw-bold">
+                                    <i class="fa-solid fa-check"></i> Aplicar
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center py-5 text-muted">
+                                <i class="fa-solid fa-thumbs-up fa-2x mb-3 text-success"></i><br>
+                                ¡Todo al día! No hay órdenes pendientes.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

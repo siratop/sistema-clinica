@@ -1,0 +1,68 @@
+{% extends 'miapp/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6">
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-dark text-white text-center py-3">
+                <h4 class="mb-0"><i class="fa-solid fa-id-card"></i> Registro de Personal</h4>
+                <small>Uso exclusivo para Médicos, Enfermeras y Administrativos</small>
+            </div>
+            <div class="card-body p-4">
+                
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="alert alert-info border-info d-flex align-items-center">
+                        <i class="fa-solid fa-circle-info me-2"></i>
+                        <div>
+                            <strong>Nota:</strong> Solo podrás registrarte si tu cédula ha sido autorizada previamente por la Dirección en la "Lista Blanca".
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="fw-bold">Cédula de Identidad Autorizada</label>
+                        {{ form.cedula_identidad }}
+                        {% if form.cedula_identidad.errors %}
+                            <div class="text-danger small mt-1">{{ form.cedula_identidad.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="fw-bold">Usuario Nuevo</label>
+                            {{ form.username }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="fw-bold">Contraseña Nueva</label>
+                            {{ form.password }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="fw-bold">Teléfono de Contacto</label>
+                        {{ form.telefono }}
+                    </div>
+
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg shadow">Validar y Registrarse</button>
+                        <a href="{% url 'inicio' %}" class="btn btn-outline-secondary">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-center text-muted small py-3">
+                ¿Problemas para registrarte? Contacta al Administrador del Sistema.
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

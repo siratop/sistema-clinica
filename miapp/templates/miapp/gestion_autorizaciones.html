@@ -1,0 +1,173 @@
+{% extends 'miapp/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="text-primary fw-bold"><i class="fa-solid fa-id-card"></i> Autorización de Personal</h2>
+            <p class="text-muted">Gestión de la "Lista Blanca" para registro de empleados.</p>
+        </div>
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">
+            <i class="fa-solid fa-arrow-left"></i> Volver al Dashboard
+        </a>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card shadow border-top border-4 border-primary">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0 fw-bold text-primary">
+                        <i class="fa-solid fa-user-plus"></i> Nueva Autorización
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label class="fw-bold small text-muted">Cédula de Identidad</label>
+                            <input type="text" name="cedula" class="form-control" placeholder="Ej: V-12345678" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="fw-bold small text-muted">Nombre Completo</label>
+                            <input type="text" name="nombre" class="form-control" placeholder="Ej: Dr. Juan Pérez" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="fw-bold small text-muted">Rol en la Clínica</label>
+                            <select name="rol" class="form-select" id="selectRol" required onchange="toggleEspecialidad()">
+                                <option value="medico">Médico</option>
+                                <option value="enfermera">Enfermera</option>
+                                <option value="secretaria">Secretaria</option>
+                                <option value="contador">Contador / Admin</option>
+                                <option value="gerente">Gerente</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3" id="divEspecialidad">
+                            <label class="fw-bold small text-muted">Especialidad (Solo Médicos)</label>
+                            <select name="especialidad" class="form-select">
+                                <option value="">--- Seleccione una ---</option>
+                                {% for esp in especialidades %}
+                                    <option value="{{ esp.id }}">{{ esp.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="form-text text-muted small">
+                                *Si la especialidad no aparece, contacta a soporte técnico.
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 fw-bold shadow-sm">
+                            <i class="fa-solid fa-check-circle"></i> Autorizar Ingreso
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card shadow border-0">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold text-dark">
+                        <i class="fa-solid fa-list"></i> Personal Activo y Pendiente
+                    </h5>
+                    <span class="badge bg-secondary">{{ autorizados.count }} Registros</span>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Cédula</th>
+                                <th>Nombre</th>
+                                <th>Rol / Área</th>
+                                <th>Estado</th>
+                                <th class="text-end">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for p in autorizados %}
+                            <tr>
+                                <td class="fw-bold text-dark">{{ p.cedula }}</td>
+                                <td>
+                                    {{ p.nombre_completo }}
+                                </td>
+                                <td>
+                                    {% if p.rol == 'medico' %}
+                                        <span class="badge bg-info text-dark"><i class="fa-solid fa-user-doctor"></i> Médico</span>
+                                    {% elif p.rol == 'contador' %}
+                                        <span class="badge bg-success"><i class="fa-solid fa-calculator"></i> Contable</span>
+                                    {% elif p.rol == 'enfermera' %}
+                                        <span class="badge bg-warning text-dark"><i class="fa-solid fa-user-nurse"></i> Enfermería</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">{{ p.get_rol_display }}</span>
+                                    {% endif %}
+
+                                    {% if p.especialidad_asignada %}
+                                        <div class="small text-muted mt-1">{{ p.especialidad_asignada.nombre }}</div>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if p.usado %}
+                                        <span class="badge bg-success rounded-pill">
+                                            <i class="fa-solid fa-circle-check"></i> Registrado
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-warning text-dark rounded-pill">
+                                            <i class="fa-solid fa-clock"></i> Pendiente
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end">
+                                    <a href="{% url 'bloquear_personal' p.id %}" 
+                                       class="btn btn-outline-danger btn-sm"
+                                       title="Quitar acceso al sistema"
+                                       onclick="return confirm('ATENCIÓN: ¿Desea retirar el acceso a {{ p.nombre_completo }}?\n\nSi ya tiene usuario, este será BLOQUEADO pero su historial médico NO se borrará.')">
+                                        <i class="fa-solid fa-ban"></i> Quitar
+                                    </a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center py-5 text-muted">
+                                    <i class="fa-solid fa-users-slash fa-2x mb-3"></i><br>
+                                    No hay personal autorizado en la lista.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleEspecialidad() {
+        var rol = document.getElementById("selectRol").value;
+        var div = document.getElementById("divEspecialidad");
+        
+        if (rol === "medico") {
+            div.style.display = "block";
+        } else {
+            div.style.display = "none";
+        }
+    }
+    // Ejecutar al cargar por si acaso
+    document.addEventListener("DOMContentLoaded", function() {
+        toggleEspecialidad();
+    });
+</script>
+
+{% endblock %}

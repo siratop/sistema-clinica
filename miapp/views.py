@@ -198,11 +198,32 @@ def dashboard_enfermera(request):
     return render(request, 'miapp/panel_enfermera.html', {'ordenes': ordenes_pendientes})
 
 def dashboard_admin_general(request):
+    # 1. Estadísticas Generales
     total_pacientes = Paciente.objects.count()
-    medicos = PerfilUsuario.objects.filter(rol='medico')
+    medicos_count = PerfilUsuario.objects.filter(rol='medico').count()
     citas_hoy = Cita.objects.filter(fecha=datetime.date.today()).count()
-    return render(request, 'miapp/dashboard_admin.html', {'total_pacientes': total_pacientes, 'medicos': medicos, 'citas_hoy': citas_hoy})
+    
+    # 2. Resumen Financiero
+    movimientos = MovimientoContable.objects.all()
+    
+    # Calculamos
+    ingresos_raw = sum(m.monto for m in movimientos if m.tipo == 'ingreso')
+    egresos_raw = sum(m.monto for m in movimientos if m.tipo in ['egreso', 'nomina', 'impuesto'])
+    balance_raw = ingresos_raw - egresos_raw
 
+    # REDONDEO EN PYTHON (Para evitar el error de floatform en tu versión)
+    total_ingresos = round(ingresos_raw, 2)
+    total_egresos = round(egresos_raw, 2)
+    balance = round(balance_raw, 2)
+
+    return render(request, 'miapp/dashboard_admin.html', {
+        'total_pacientes': total_pacientes,
+        'medicos_count': medicos_count,
+        'citas_hoy': citas_hoy,
+        'total_ingresos': total_ingresos,
+        'total_egresos': total_egresos,
+        'balance': balance
+    })
 # ==========================================
 # 4. GESTIÓN PACIENTES Y CMS
 # ==========================================
@@ -334,3 +355,102 @@ def ejecutar_orden(request, id):
     else:
         form = EjecucionOrdenForm(instance=orden)
     return render(request, 'miapp/editar_generico.html', {'form': form, 'titulo': 'Ejecutar Orden'})
+
+# --- VISTAS ADMINISTRATIVAS NUEVAS ---
+
+@login_required
+def panel_finanzas(request):
+    if not request.user.is_staff: return redirect('dashboard')
+    
+    # Procesar formulario de nuevo movimiento
+    if request.method == 'POST':
+        form = MovimientoContableForm(request.POST)
+        if form.is_valid():
+            mov = form.save(commit=False)
+            mov.responsable = request.user
+            mov.save()
+            messages.success(request, "Movimiento registrado correctamente.")
+            return redirect('panel_finanzas')
+    else:
+        form = MovimientoContableForm()
+
+    # Cálculos
+    movimientos = MovimientoContable.objects.all().order_by('-fecha')
+    ingresos_raw = sum(m.monto for m in movimientos if m.tipo == 'ingreso')
+    egresos_raw = sum(m.monto for m in movimientos if m.tipo in ['egreso', 'nomina', 'impuesto'])
+    balance_raw = ingresos_raw - egresos_raw
+    
+    # Redondeo seguro para la plantilla
+    total_ingresos = round(ingresos_raw, 2)
+    total_egresos = round(egresos_raw, 2)
+    balance = round(balance_raw, 2)
+
+    return render(request, 'miapp/panel_finanzas.html', {
+        'form': form,
+        'movimientos': movimientos,
+        'total_ingresos': total_ingresos,
+        'total_egresos': total_egresos,
+        'balance': balance
+    })
+
+@login_required
+def gestion_staff(request):
+    # Solo muestra médicos activos
+    medicos = PerfilUsuario.objects.filter(rol='medico')
+    return render(request, 'miapp/gestion_staff.html', {'medicos': medicos})
+
+@login_required
+def gestion_autorizaciones(request):
+    # Aquí el Admin agrega gente a la Lista Blanca
+    if not request.user.is_superuser: return redirect('dashboard')
+
+    # Guardar nueva autorización
+    if request.method == 'POST':
+        # Procesamos manualmente rápido o podrías crear un Form en forms.py
+        cedula = request.POST.get('cedula')
+        nombre = request.POST.get('nombre')
+        rol = request.POST.get('rol')
+        # Buscar especialidad si aplica
+        esp_id = request.POST.get('especialidad')
+        especialidad = None
+        if esp_id:
+            especialidad = Especialidad.objects.get(id=esp_id)
+
+        PersonalAutorizado.objects.create(
+            cedula=cedula, nombre_completo=nombre, rol=rol, especialidad_asignada=especialidad
+        )
+        messages.success(request, f"Autorizado: {nombre}")
+        return redirect('gestion_autorizaciones')
+
+    autorizados = PersonalAutorizado.objects.all().order_by('-id')
+    especialidades = Especialidad.objects.all()
+    
+    return render(request, 'miapp/gestion_autorizaciones.html', {
+        'autorizados': autorizados,
+        'especialidades': especialidades
+    })
+
+@login_required
+def bloquear_personal(request, id):
+    # Solo el Super Admin puede hacer esto
+    if not request.user.is_superuser: return redirect('dashboard')
+    
+    personal = get_object_or_404(PersonalAutorizado, id=id)
+    
+    # 1. Buscamos si ya tiene un usuario creado
+    try:
+        perfil = PerfilUsuario.objects.get(cedula=personal.cedula)
+        usuario = perfil.usuario
+        
+        # 2. LO BLOQUEAMOS (No lo borramos)
+        usuario.is_active = False  # Esto impide que inicie sesión
+        usuario.save()
+        messages.warning(request, f"El acceso de {personal.nombre_completo} ha sido BLOQUEADO. Sus citas se mantienen.")
+    except PerfilUsuario.DoesNotExist:
+        # Si no se había registrado aún, solo borramos la autorización
+        messages.info(request, "Se eliminó la autorización (aún no tenía usuario).")
+
+    # 3. Borramos/Marcamos la autorización para que no se pueda volver a registrar con esa cédula
+    personal.delete() 
+    
+    return redirect('gestion_autorizaciones')

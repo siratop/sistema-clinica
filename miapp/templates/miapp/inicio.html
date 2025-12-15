@@ -1,150 +1,149 @@
 {% extends 'miapp/base.html' %}
+{% load static %}
 
 {% block content %}
 
-<div id="mainCarousel" class="carousel slide mb-5 shadow rounded overflow-hidden" data-bs-ride="carousel">
-    
-    <div class="carousel-indicators">
-        {% for slide in slides %}
-        <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}"></button>
-        {% endfor %}
-    </div>
-
+<div id="carruselRenacer" class="carousel slide carousel-fade shadow-sm" data-bs-ride="carousel">
     <div class="carousel-inner">
         {% for slide in slides %}
-        <div class="carousel-item {% if forloop.first %}active{% endif %}" style="position: relative; cursor: pointer;" onclick="abrirImagen('{{ slide.imagen.url }}', '{{ slide.titulo }}')">
-            
-            {% if slide.imagen %}
-            <img src="{{ slide.imagen.url }}" class="d-block w-100" style="height: 500px; object-fit: cover;">
-            
-            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0, {{ slide.overlay }});"></div>
-            {% endif %}
-
+        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+            <img src="{{ slide.imagen.url }}" class="d-block w-100" style="height: 500px; object-fit: cover; filter: brightness({{ slide.overlay }});" alt="{{ slide.titulo }}">
             <div class="carousel-caption d-none d-md-block">
-                <h1 class="display-4 fw-bold text-white text-shadow">{{ slide.titulo }}</h1>
-                <p class="fs-4 text-white text-shadow">{{ slide.subtitulo }}</p>
-                <small class="btn btn-outline-light btn-sm mt-2 rounded-pill"><i class="fa-solid fa-expand"></i> Ver Anuncio Completo</small>
+                <h1 class="display-4 fw-bold text-shadow">{{ slide.titulo }}</h1>
+                <p class="fs-4 text-shadow">{{ slide.subtitulo }}</p>
             </div>
         </div>
         {% empty %}
         <div class="carousel-item active">
-            <img src="https://img.freepik.com/free-photo/blur-hospital_1203-7957.jpg" class="d-block w-100" style="height: 500px; object-fit: cover; filter: brightness(0.6);">
-            <div class="carousel-caption">
-                <h1 class="display-4 fw-bold">Clínica Renacer</h1>
-                <p>Bienvenido a nuestro portal de salud.</p>
+            <div class="d-block w-100 bg-secondary d-flex align-items-center justify-content-center" style="height: 500px;">
+                <div class="text-center text-white">
+                    <h1 class="fw-bold">Clínica Renacer</h1>
+                    <p class="fs-4">Bienvenido a nuestro portal de salud</p>
+                </div>
             </div>
         </div>
         {% endfor %}
     </div>
-
-    <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel" data-bs-slide="prev">
+    <button class="carousel-control-prev" type="button" data-bs-target="#carruselRenacer" data-bs-slide="prev">
         <span class="carousel-control-prev-icon"></span>
     </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#mainCarousel" data-bs-slide="next">
+    <button class="carousel-control-next" type="button" data-bs-target="#carruselRenacer" data-bs-slide="next">
         <span class="carousel-control-next-icon"></span>
     </button>
 </div>
 
-<div class="modal fade" id="modalImagen" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content bg-transparent border-0">
-            <div class="modal-header border-0">
-                <h5 class="modal-title text-white fw-bold text-shadow" id="modalTitulo"></h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-center">
-                <img src="" id="imagenEnGrande" class="img-fluid rounded shadow-lg" style="max-height: 85vh;">
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    function abrirImagen(url, titulo) {
-        // Asignar la imagen y el título al modal
-        document.getElementById('imagenEnGrande').src = url;
-        document.getElementById('modalTitulo').innerText = titulo;
-        // Abrir el modal
-        var myModal = new bootstrap.Modal(document.getElementById('modalImagen'));
-        myModal.show();
-    }
-</script>
-
-
-<div class="row text-center g-4 justify-content-center">
-    <div class="col-md-4">
-        <div class="card p-4 shadow-sm h-100 border-0 hover-effect">
-            <div class="mb-3 text-success"><i class="fa-solid fa-hospital-user fa-3x"></i></div>
-            <h4 class="fw-bold">Soy Paciente</h4>
-            <p class="text-muted small">Agenda citas, historial clínico y resultados.</p>
-            <div class="d-grid gap-2">
-                <a href="{% url 'registro_paciente' %}" class="btn btn-outline-success rounded-pill">Registrarme</a>
-                <a href="{% url 'login' %}" class="btn btn-sm text-success">Ya tengo cuenta</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-4">
-        <div class="card p-4 shadow-sm h-100 border-0 hover-effect bg-light">
-            <div class="mb-3 text-secondary"><i class="fa-solid fa-calendar-check fa-3x"></i></div>
-            <h4 class="fw-bold text-secondary">Cita Rápida</h4>
-            <p class="text-muted small">Agenda sin registro.<br><span class="text-danger fw-bold">Nota:</span> No guarda historial.</p>
-            <div class="d-grid mt-auto">
-                <a href="{% url 'cita_invitado' %}" class="btn btn-secondary rounded-pill">Agendar como Invitado</a>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-4">
-        <div class="card p-4 shadow-sm h-100 border-0 bg-success text-white">
-            <div class="mb-3 text-white"><i class="fa-solid fa-user-doctor fa-3x"></i></div>
-            <h4 class="fw-bold">Soy Personal</h4>
-            <p class="opacity-75 small">Acceso administrativo y médico.</p>
-            <div class="d-grid mt-auto">
-                <a href="{% url 'login' %}" class="btn btn-light text-success fw-bold rounded-pill">Acceso Sistema</a>
-            </div>
-        </div>
-    </div>
-</div>
-
-{% if aviso and aviso.activo %}
-<div class="container mt-5 pt-4">
-    <div class="alert alert-warning shadow-sm border-start border-warning border-5" role="alert">
-        <h4 class="alert-heading text-warning-emphasis"><i class="fa-solid fa-bullhorn"></i> {{ aviso.titulo }}</h4>
-        <p class="mb-0">{{ aviso.mensaje }}</p>
-        <hr>
-        <small class="text-muted">Actualizado: {{ aviso.fecha_actualizacion|date:"d M Y" }}</small>
-    </div>
-</div>
-{% endif %}
-
-<div class="row justify-content-center my-5">
-    <div class="col-md-8">
-        <h3 class="text-center text-secondary fw-bold mb-4">Preguntas Frecuentes</h3>
-        <div class="accordion shadow-sm" id="faqAccordion">
-            {% for faq in faqs %}
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq{{ faq.id }}">
-                        {{ faq.pregunta }}
-                    </button>
-                </h2>
-                <div id="faq{{ faq.id }}" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">{{ faq.respuesta }}</div>
+<div class="bg-light py-5"> <div class="container">
+        <div class="row g-4 justify-content-center">
+            
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm text-center py-4 rounded-3 hover-card">
+                    <div class="card-body d-flex flex-column">
+                        <div class="mb-3 text-success">
+                            <i class="fa-solid fa-file-medical fa-3x"></i>
+                        </div>
+                        <h3 class="fw-bold text-dark">Soy Paciente</h3>
+                        <p class="text-muted small mb-4">Agenda citas, historial clínico y resultados.</p>
+                        
+                        <div class="mt-auto d-grid gap-2 px-3">
+                            <a href="{% url 'registro_paciente' %}" class="btn btn-outline-success fw-bold rounded-pill">
+                                Registrarme
+                            </a>
+                            <a href="{% url 'login' %}" class="btn btn-link text-success text-decoration-none small">
+                                Ya tengo cuenta
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
-            {% empty %}
-            <p class="text-center text-muted">No hay preguntas registradas.</p>
-            {% endfor %}
+
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm text-center py-4 rounded-3 hover-card">
+                    <div class="card-body d-flex flex-column">
+                        <div class="mb-3 text-secondary">
+                            <i class="fa-solid fa-calendar-days fa-3x"></i>
+                        </div>
+                        <h3 class="fw-bold text-dark">Cita Rápida</h3>
+                        <p class="text-muted small mb-4">
+                            Agenda sin registro previo.<br>
+                            <span class="text-danger fw-bold" style="font-size: 0.85em;">Nota: No guarda historial clínico.</span>
+                        </p>
+                        
+                        <div class="mt-auto d-grid gap-2 px-3">
+                            <a href="{% url 'cita_invitado' %}" class="btn btn-secondary fw-bold rounded-pill text-white">
+                                Agendar como Invitado
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm text-center py-4 rounded-3 text-white hover-card" style="background-color: #198754;">
+                    <div class="card-body d-flex flex-column">
+                        <div class="mb-3">
+                            <i class="fa-solid fa-user-doctor fa-3x"></i>
+                        </div>
+                        <h3 class="fw-bold">Soy Personal</h3>
+                        <p class="text-white-50 small mb-4">Acceso administrativo y médico.</p>
+                        
+                        <div class="mt-auto d-grid gap-2 px-3">
+                            <a href="{% url 'login' %}" class="btn btn-light fw-bold text-success rounded-pill shadow-sm">
+                                Ingresar al Sistema
+                            </a>
+
+                            <div class="my-1 border-top border-white opacity-25"></div>
+
+                            <div class="text-center">
+                                <small class="text-white mb-1 d-block" style="font-size: 0.85em;">¿Fuiste autorizado?</small>
+                                <a href="{% url 'registro_personal' %}" class="btn btn-outline-light btn-sm w-100 rounded-pill">
+                                    <i class="fa-solid fa-plus-circle"></i> Crea tu Usuario Aquí
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <h3 class="text-center fw-bold text-secondary mb-4">Preguntas Frecuentes</h3>
+    
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            {% if faqs %}
+                <div class="accordion accordion-flush" id="faqAccordion">
+                    {% for faq in faqs %}
+                    <div class="accordion-item mb-2 border rounded shadow-sm">
+                        <h2 class="accordion-header" id="heading{{ faq.id }}">
+                            <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ faq.id }}">
+                                {{ faq.pregunta }}
+                            </button>
+                        </h2>
+                        <div id="collapse{{ faq.id }}" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-muted bg-white">
+                                {{ faq.respuesta }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center text-muted py-4 bg-light rounded">
+                    No hay preguntas registradas por el momento.
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>
 
 <style>
-    /* Sombra para que el texto resalte sobre cualquier imagen */
-    .text-shadow {
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
-    }
+    .text-shadow { text-shadow: 2px 2px 4px rgba(0,0,0,0.6); }
+    /* Animación suave al pasar el mouse */
+    .hover-card { transition: transform 0.3s ease; }
+    .hover-card:hover { transform: translateY(-5px); }
 </style>
 
 {% endblock %}
