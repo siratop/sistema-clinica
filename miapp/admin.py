@@ -17,13 +17,9 @@ from .models import (
 # 1. SEGURIDAD Y ROLES (LISTA BLANCA)
 # ==========================================
 class PersonalAutorizadoAdmin(admin.ModelAdmin):
-    # Esto define qué columnas ves en la lista
     list_display = ('cedula', 'nombre_completo', 'rol', 'especialidad_asignada', 'usado')
-    # Filtros laterales para buscar rápido
     list_filter = ('rol', 'usado')
-    # Barra de búsqueda
     search_fields = ('cedula', 'nombre_completo')
-    # Orden alfabético
     ordering = ('nombre_completo',)
     list_per_page = 20
 
@@ -39,8 +35,8 @@ class MovimientoContableAdmin(admin.ModelAdmin):
     list_display = ('fecha', 'tipo', 'descripcion', 'monto', 'es_divisa', 'responsable')
     list_filter = ('tipo', 'fecha', 'es_divisa')
     search_fields = ('descripcion', 'referencia')
-    date_hierarchy = 'fecha' # Navegación por fechas arriba
-    list_editable = ('tipo',) # Permite editar el tipo rápido desde la lista
+    date_hierarchy = 'fecha'
+    list_editable = ('tipo',) # Esto funciona porque 'fecha' es el link por defecto (el primero)
 
 # ==========================================
 # 3. GESTIÓN MÉDICA
@@ -61,16 +57,20 @@ class OrdenMedicaAdmin(admin.ModelAdmin):
     list_filter = ('ejecutada', 'fecha_creacion')
 
 # ==========================================
-# 4. CMS (WEB)
+# 4. CMS (WEB) - CORREGIDO AQUÍ
 # ==========================================
 class CarruselAdmin(admin.ModelAdmin):
     list_display = ('orden', 'titulo', 'activo')
-    list_editable = ('orden', 'activo')
+    list_editable = ('orden', 'activo') 
+    # SOLUCIÓN: Hacemos que 'titulo' sea el link, liberando a 'orden' para editarse
+    list_display_links = ('titulo',) 
     ordering = ('orden',)
 
 class PreguntaAdmin(admin.ModelAdmin):
     list_display = ('orden', 'pregunta', 'activa')
     list_editable = ('orden', 'activa')
+    # SOLUCIÓN: Hacemos que 'pregunta' sea el link
+    list_display_links = ('pregunta',)
     ordering = ('orden',)
 
 # ==========================================
